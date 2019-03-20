@@ -1,0 +1,65 @@
+html, body {
+    height: 100%;
+    margin: 0;
+  }
+  .wrapper {
+    /* footer與body距離(<body><section class="wrapper"></section></body>) */
+    padding-top: 50px;
+    padding-bottom: 65px;
+    /* 最小距離 */
+    min-height: 75%; 
+    /* Equal to height of footer */
+    /* But also accounting for potential margin-bottom of last child */
+    margin-bottom: -30px;   
+  }
+  .footer,
+  .push {
+    height: 50px;
+  }
+  footer{
+    color: white;
+  }
+  footer a{
+    color: black;
+  }
+  footer a:hover{
+    color: white;
+  }
+  
+  .footer-bottom{
+    background: black;
+    padding: 2em;
+  }
+  .footer-top{
+    background: #2d4958;  
+  }
+  .footer-middle{
+     background: #F7F7F7;
+    padding-top: 2em;
+    color: black;
+  }
+  /**Sub Navigation**/
+  .subnavigation-container{
+    background: #3d6277;
+  }
+  .subnavigation .nav-link{
+    color: white;
+    font-weight: bold;
+  }
+  .subnavigation-container{
+    text-align: center;
+  }
+  .subnavigation-container .navbar{
+    display: inline-block;
+    margin-bottom: -3px; /* Inline-block margin offffset HACK -Gilron */
+  }
+  .col-subnav a{
+    padding: 1rem 1rem;
+    color: white;
+    font-weight: bold;
+  }
+  .col-subnav .active{
+    border-top:5px solid orange;
+   background: white;
+    color: black;
+  }

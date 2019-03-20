@@ -1,0 +1,70 @@
+<!-- KRAJEE EXPLORER THEME (BASIC) -->
+<!-- load the CSS files in the right order -->
+<link href="/libs/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet">
+<link href="/libs/bootstrap-fileinput/themes/explorer/theme.css" rel="stylesheet">
+<!-- load the JS files in the right order -->
+<script src="/libs/bootstrap-fileinput/js/fileinput.js"></script>
+<script src="/libs/bootstrap-fileinput/themes/explorer/theme.js"></script>
+
+<!-- form start POST & enctype="multipart/form-data" for file upload-->
+<form role="form-horizontal" method="post" enctype="multipart/form-data">
+    <!-- //- 隐藏表单域，用来更新数据，存储ID -->
+    <input type="hidden" name="goods[_id]" value="{{ goods._id | safe }}" />
+    <div class="form-label-group">
+        <label for="exampleFormControlInput1">商品名稱</label>
+        <input type="text" name="goods[name]" class="form-control" id="exampleFormControlInput1" placeholder="商品名稱">
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">商品介紹</label>
+        <textarea type="text" class="form-control" name="goods[despcrip]" id="exampleFormControlTextarea1" rows="3"></textarea>
+    </div>
+    <div class="table-responsive form-label-group">
+        <table class="table table-bordered table-striped table-highlight">
+            <thead>
+                <th>數量</th>
+                <th>單價</th>
+                <th>種類</th>
+                <th>上架</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="number" name="goods[quentity]" class="form-control" value="" /></td>
+                    <td><input type="number" name="goods[price]" class="form-control" value="" /></td>
+                    <td>
+                        <select class="form-control" required="">
+                            <option>電子</option>
+                            <option>Yearly</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="goods[draft]" class="form-control">
+                            <option>草稿</option>
+                            <option>上架</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- IMAGE UPLORD #input-pageImage -->
+
+    <div class="file-loading>
+        <label for=" exampleFormControlUpload">上傳商品示意圖</label>
+        <input id="input-pageImage" name="product" type="file" multiple accept="image">
+    </div>
+    <div class="form-label-group">
+        <button type="submit" class="btn btn-primary">
+            提交
+        </button>
+    </div>
+</form>
+
+<script>
+    $("#input-pageImage").fileinput({
+        theme: "explorer",
+        uploadUrl: "/admin/goods",
+        allowedFileExtensions: ['jpg', 'png', 'gif'],
+        overwriteInitial: false,
+        initialPreviewAsData: true,
+    });
+</script>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+    <!-- add <head> tag before it -->
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- footer with wraping fix fix -->
+    <link rel="stylesheet" href="/css/footer.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/libs/bootstrap/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+    <!-- <script src="/libs/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+    <script src="/libs/jquery/dist/jquery.min.js"></script>
+    <script src="/libs/bootstrap/js/bootstrap.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <!-- <script src="./Fixed top navbar example for Bootstrap_files/popper.min.js.下載"></script> -->
+    <!-- Bootstrap core JavaScript & CSS
+  ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous"> -->
+    <!-- <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet"> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script> -->
+   
+    {% endblock %}
+</head>
+<header>
+    {% block header %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">
+            <img class="d-inline-block align-top" src="/img/F0D6A03DBC9FD2C154880CA915251D352.gif" width="200" height="50" alt="" />
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+            </ul>
+            {% block login %}
+            <ul class="navbar-nav text-right">
+                <li class="nav-item">
+                    <a class="nav-link" href="/cart">購物車</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">登入</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/regesit">註冊</a>
+                </li>
+            </ul>
+            {% endblock %}
+        </div>
+    </nav>
+    {% endblock %}
+</header>
+
+<body>
+    <!-- <script type="text/javascript" color="192,192,192" opacity='0.7' zIndex="-2" count="100" src="/js/canvas-nest.js"></script> -->
+    <section class="wrapper">
+        {% block content %}{% endblock %}
+    </section>
+    {% block footer %}
+    <!-- Footer -->
+    <footer class="mainfooter" role="contentinfo">
+        <div class="footer-top p-y-2">
+            <div class="container-fluid">
+                <div class="row"></div>
+            </div>
+        </div>
+        <div class="footer-middle">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <!-- Column1-->
+                        <div class="footer-pad">
+                            <h4>Address</h4>
+                            <address>
+                                <ul class="list-unstyled">
+                                    <li>City Hall<br /> 212 Street<br /> Lawoma<br /> 735<br /></li>
+                                    <li>Phone: 0</li>
+                                </ul>
+                            </address>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <!-- Column1-->
+                        <div class="footer-pad">
+                            <h4>Popular Services</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#"></a></li>
+                                <li><a href="#">Payment Center</a></li>
+                                <li><a href="#">Contact Directory</a></li>
+                                <li><a href="#">Forms</a></li>
+                                <li><a href="#">News and Updates</a></li>
+                                <li><a href="#">FAQs</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <!-- Column1-->
+                        <div class="footer-pad">
+                            <h4>Website Information</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#">Website Tutorial</a></li>
+                                <li><a href="#">Accessibility</a></li>
+                                <li><a href="#">Disclaimer</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">FAQs</a></li>
+                                <li><a href="#">Webmaster</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <!-- Column1-->
+                        <div class="footer-pad">
+                            <h4>管理員</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="/admin/login">登入</a></li>
+                                <li><a href="/admin/regesit">註冊</a></li>
+                                <li><a href="#">忘記密碼</a></li>
+                                <li><a href="/admin">Fire</a></li>
+                                <li><a href="#">Mayor and City Council</a></li>
+                                <li><a href="#"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- Footer Bottom-->
+                        <p class="text-xs-center">© Copyright ???????????.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+</body>
