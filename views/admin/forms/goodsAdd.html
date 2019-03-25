@@ -7,16 +7,18 @@
 <script src="/libs/bootstrap-fileinput/themes/explorer/theme.js"></script>
 
 <!-- form start POST & enctype="multipart/form-data" for file upload-->
-<form role="form-horizontal" method="post" enctype="multipart/form-data">
+<form role="form-horizontal" action="/admin/goods" method="post" enctype="multipart/form-data">
     <!-- //- 隐藏表单域，用来更新数据，存储ID -->
-    <input type="hidden" name="goods[_id]" value="{{ goods._id | safe }}" />
+    <input type="hidden" name="goods[_id]" value="{{ product._id | safe }}">
     <div class="form-label-group">
         <label for="exampleFormControlInput1">商品名稱</label>
-        <input type="text" name="goods[name]" class="form-control" id="exampleFormControlInput1" placeholder="商品名稱">
+        <input type="text" name="goods[name]" class="form-control" id="exampleFormControlInput1" placeholder="商品名稱"
+            value="{{ product.name }}">
     </div>
     <div class="form-group">
         <label for="exampleFormControlTextarea1">商品介紹</label>
-        <textarea type="text" class="form-control" name="goods[despcrip]" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <textarea type="text" class="form-control" name="goods[des]" id="exampleFormControlTextarea1"
+            rows="3" ></textarea>
     </div>
     <div class="table-responsive form-label-group">
         <table class="table table-bordered table-striped table-highlight">
@@ -28,8 +30,10 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="number" name="goods[quentity]" class="form-control" value="" /></td>
-                    <td><input type="number" name="goods[price]" class="form-control" value="" /></td>
+                    <td><input type="number" name="goods[quentity]" class="form-control"
+                            value="{{ product.quentity }}" /></td>
+                    <td><input type="number" name="goods[price]" class="form-control" value="{{  product.price }}" />
+                    </td>
                     <td>
                         <select class="form-control" required="">
                             <option>電子</option>
@@ -54,16 +58,37 @@
     </div>
     <div class="form-label-group">
         <button type="submit" class="btn btn-primary">
-            提交
+            {{ submit }}
         </button>
     </div>
 </form>
-
 <script>
+document.getElementById("exampleFormControlTextarea1").value="{{ product.des | replace('\r\n', '\n', 'g') }}"
+// swig.js filter 可以簡單解決這些問題，swig.js可以render '\n'，但是不行render '\r\n'，所以只要把 '\r\n
+// 或是寫 str.replace(/\r\n \/g, '<br/>')，之類的可以嘗試
+// replace ('\n', '<br/>', 'g')  replace ('\s', '&nbsp;', 'g') }}"
+</script>
+<!-- <script>
+    // textarea 所得到的資料，顯示在網頁上時，空格及換行皆會變為一格空格。
+    // 解決方法有二。
+    // 第一種，使用<pre> </pre>
+    // <pre>在這邊的內容會依照原本格式顯示出來，不論空格或換行</pre>
+    // 第二種
+    // 將換行語法 \n 替換成網頁換行語法<BR>
+    // 空格 替換成網頁空格語法&nbsp; ，當空格過長時只用一個&nbsp;在網頁上顯示時會變短，因此可用&nbsp;&nbsp;。
+    // var x = "{{ product.des }}";
+    // getFormatCode(x);
+    // var getFormatCode = function (strValue) { // \r\n 是微軟文件會產生的，用 \n 來替換 
+    //     return strValue.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, '&nbsp;');
+    //     document.getElementById("exampleFormControlTextarea1").value = getFormatCode(strValue)
+    // }
+</script> -->
+<script>
+    {{ product.img}}
     $("#input-pageImage").fileinput({
         theme: "explorer",
         uploadUrl: "/admin/goods",
-        allowedFileExtensions: ['jpg', 'png', 'gif'],
+        allowedFileExtensions: ['jpg', 'jpeg','png', 'gif'],
         overwriteInitial: false,
         initialPreviewAsData: true,
     });

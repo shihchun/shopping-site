@@ -1,5 +1,7 @@
 {% extends 'layouts/general.html' %}
 {% block content %}
+
+<!-- userpart -->
 {% if userlist != '' %}
 <h1 class="text-center">管理員名單</h1>
 <!-- set the grid -->
@@ -22,3 +24,32 @@
     </div>
 </div>
 {% endif %}
+
+<!-- goodpart -->
+{% if productlist != '' %}
+<h1 class="text-center">商品列表</h1>
+<!-- set the grid -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% include "datasets/productlist.html" %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if productDetial != '' %}
+<h1 class="text-center">商品詳細內容</h1>
+<!-- set the grid -->
+<div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8" >
+                    {% include "datasets/productDetial.html" %}
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    </div>
+{% endif %}
+

@@ -4,7 +4,7 @@ var goodSchema = new mongoose.Schema({
     name: String,
     quentity: Number,
     price: Number,
-    despcrip: String,
+    des: String,
     draft: String,
     img_count: Number,
     img: Array,
