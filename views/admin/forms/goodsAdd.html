@@ -1,10 +1,41 @@
 <!-- KRAJEE EXPLORER THEME (BASIC) -->
 <!-- load the CSS files in the right order -->
-<link href="/libs/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet">
-<link href="/libs/bootstrap-fileinput/themes/explorer/theme.css" rel="stylesheet">
+<!-- <link href="/libs/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet">
+<link href="/libs/bootstrap-fileinput/themes/explorer/theme.css" rel="stylesheet"> -->
 <!-- load the JS files in the right order -->
-<script src="/libs/bootstrap-fileinput/js/fileinput.js"></script>
-<script src="/libs/bootstrap-fileinput/themes/explorer/theme.js"></script>
+<!-- <script src="/libs/bootstrap-fileinput/js/fileinput.js"></script>
+<script src="/libs/bootstrap-fileinput/themes/explorer/theme.js"></script> -->
+
+<!-- cdn -->
+<!-- Via jsDelivr. Please note, jsDelivr may take a few days to update to the latest release. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<!-- KRAJEE EXPLORER THEME -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.5.2/css/fileinput.min.css" media="all"
+    rel="stylesheet" type="text/css" />
+<!-- if using RTL (Right-To-Left) orientation, load the RTL CSS file after fileinput.css by uncommenting below -->
+<!-- link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.5.2/css/fileinput-rtl.min.css" media="all" rel="stylesheet" type="text/css" /-->
+<!-- the font awesome icon library if using with `fas` theme (or Bootstrap 4.x). Note that default icons used in the plugin are glyphicons that are bundled only with Bootstrap 3.x. -->
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous"> -->
+<!-- piexif.min.js is needed for auto orienting image files OR when restoring exif data in resized images and when you
+    wish to resize images before upload. This must be loaded before fileinput.min.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.5.2/js/plugins/piexif.min.js"
+    type="text/javascript"></script>
+<!-- sortable.min.js is only needed if you wish to sort / rearrange files in initial preview. 
+    This must be loaded before fileinput.min.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.5.2/js/plugins/sortable.min.js"
+    type="text/javascript"></script>
+<!-- purify.min.js is only needed if you wish to purify HTML content in your preview for 
+    HTML files. This must be loaded before fileinput.min.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.5.2/js/plugins/purify.min.js"
+    type="text/javascript"></script>
+<!-- the main fileinput plugin file -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.5.2/js/fileinput.min.js"></script>
+<!-- following theme script is needed to use the Font Awesome 5.x theme (`fas`) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.5.2/themes/fas/theme.min.js"></script>
+<!-- optionally if you need translation for your language then include the locale file as mentioned below (replace LANG.js with your language locale) -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.5.2/js/locales/LANG.js"></script> -->
+
 
 <!-- form start POST & enctype="multipart/form-data" for file upload-->
 <form role="form-horizontal" action="/admin/goods" method="post" enctype="multipart/form-data">
@@ -18,7 +49,7 @@
     <div class="form-group">
         <label for="exampleFormControlTextarea1">商品介紹</label>
         <textarea type="text" class="form-control" name="goods[des]" id="exampleFormControlTextarea1"
-            rows="3" ></textarea>
+            rows="3"></textarea>
     </div>
     <div class="table-responsive form-label-group">
         <table class="table table-bordered table-striped table-highlight">
@@ -54,7 +85,7 @@
 
     <div class="file-loading>
         <label for=" exampleFormControlUpload">上傳商品示意圖</label>
-        <input id="input-pageImage" name="product" type="file" multiple accept="image">
+        <input id="pageImage" name="product" type="file" multiple accept="image">
     </div>
     <div class="form-label-group">
         <button type="submit" class="btn btn-primary">
@@ -62,34 +93,89 @@
         </button>
     </div>
 </form>
+
+<div class="input-group">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+    </div>
+    <div class="custom-file">
+        <input type="file" class="custom-file-input" id="upload_file" aria-describedby="inputGroupFileAddon01" multiple>
+        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+    </div>
+</div>
+
+<div id="card" class="card">
+    <img class="card-img-top" src="http://baike.baidu.com/cms/rc/240x112dierzhou.jpg" alt="Card image cap">
+    <div class="card-body">
+        <a href="/goods/{{item._id | safe}}" class="btn btn-primary">查看</a>
+    </div>
+</div>
+
+
+<div class="strong red" id="img_size"></div>
+<textarea id="base64_0"></textarea>
+<img id="img_prev_0" src="">
+<textarea id="base64_1"></textarea>
+<img id="img_prev_1" src="">
+<textarea id="base64_2"></textarea>
+<img id="img_prev_2" src="">
+<textarea id="base64_3"></textarea>
+<img id="img_prev_3" src="">
 <script>
-document.getElementById("exampleFormControlTextarea1").value="{{ product.des | replace('\r\n', '\n', 'g') }}"
-// swig.js filter 可以簡單解決這些問題，swig.js可以render '\n'，但是不行render '\r\n'，所以只要把 '\r\n
-// 或是寫 str.replace(/\r\n \/g, '<br/>')，之類的可以嘗試
-// replace ('\n', '<br/>', 'g')  replace ('\s', '&nbsp;', 'g') }}"
+    function seebefore(a) {
+        console.log('show ' + a)
+        var f = document.getElementById('upload_file').files[a];
+        var freader = new FileReader();
+        freader.onload = function (e) {
+            console.log('set img' + a);
+            //$('#imgUL').append($('<li></li>').append($('<img />').attr('src', this.result)));
+            $('#img_prev_' + a).attr('src', this.result);
+            document.getElementById("base64_" + a).value = freader.result;
+            document.getElementById("card").innerHTML = '<img src="' + freader.result + '>';
+        }
+        freader.readAsDataURL(f);
+    }
+    $(function () {
+        $('#upload_file').change(function () {
+            console.log('change start');
+            //$('#imgUL li').remove();
+            $.each(this.files, function (a, b) {
+                seebefore(a);
+            })
+        });
+    });
 </script>
-<!-- <script>
-    // textarea 所得到的資料，顯示在網頁上時，空格及換行皆會變為一格空格。
-    // 解決方法有二。
-    // 第一種，使用<pre> </pre>
-    // <pre>在這邊的內容會依照原本格式顯示出來，不論空格或換行</pre>
-    // 第二種
-    // 將換行語法 \n 替換成網頁換行語法<BR>
-    // 空格 替換成網頁空格語法&nbsp; ，當空格過長時只用一個&nbsp;在網頁上顯示時會變短，因此可用&nbsp;&nbsp;。
-    // var x = "{{ product.des }}";
-    // getFormatCode(x);
-    // var getFormatCode = function (strValue) { // \r\n 是微軟文件會產生的，用 \n 來替換 
-    //     return strValue.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, '&nbsp;');
-    //     document.getElementById("exampleFormControlTextarea1").value = getFormatCode(strValue)
-    // }
-</script> -->
 <script>
-    {{ product.img}}
-    $("#input-pageImage").fileinput({
+    document.getElementById("exampleFormControlTextarea1").value = "{{ product.des | replace('\r\n', '\n', 'g') }}"
+    // swig.js filter 可以簡單解決這些問題，swig.js可以render '\n'，但是不行render '\r\n'，所以只要把 '\r\n
+    // 或是寫 str.replace(/\r\n \/g, '<br/>')，之類的可以嘗試
+    // replace ('\n', '<br/>', 'g')  replace ('\s', '&nbsp;', 'g') }}"
+</script>
+
+<script>
+    // {{product.img}}
+    $("#pageImage").fileinput({
         theme: "explorer",
         uploadUrl: "/admin/goods",
-        allowedFileExtensions: ['jpg', 'jpeg','png', 'gif'],
+        allowedFileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
         overwriteInitial: false,
         initialPreviewAsData: true,
     });
 </script>
+<script>
+    var simplemde = new SimpleMDE({
+        element: $("#exampleFormControlTextarea1")[0]
+    });
+</script>
+
+<style>
+        .card-columns {
+            @include media-breakpoint-only(lg) {
+                column-count: 4;
+            }
+    
+            @include media-breakpoint-only(xl) {
+                column-count: 5;
+            }
+        }
+</style>

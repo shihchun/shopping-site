@@ -43,7 +43,7 @@
     <div class="form-group mb-3">
         <!-- formate of date: value="12-02-2012" -->
         <input type="DOB" name="user[DOB]" id="inputDOB" class="form-control" placeholder="出生日期" required=""
-            autofocus="" value={{ users.DOB | date('Y-m-d') | e(null) }}>
+            autofocus="" value="{{ users.DOB | date('Y-m-d')}}">
     </div>
     <div class="checkbox mb-3">
         <label>
@@ -58,18 +58,14 @@
     </div>
     <p class="mt-5 mb-3 text-muted text-center">© <a href="https://shihchun.github.io">ShihChun</a> </p>
 </form>
-
-<!-- gijgo datapicker -->
-<!-- <script src="/libs/gijgo/js/gijgo.js type="text/javascript"></script> -->
-
-<!-- <link href="/libs/gijgo/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-<script src="/libs/gijgo/js/gijgo.min.js"></script> -->
-
-<link href="/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+<!-- <link href="/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
 <script src="/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="/libs/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-TW.min.js"
-    charset="UTF-8"></script>
-
+    charset="UTF-8"></script> -->
+<!-- cdn -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.zh-TW.min.js" charset="UTF-8"></script>
 <script>
     $('#inputDOB').datepicker({
         // uiLibrary: 'bootstrap4', // for gijgo datepicker

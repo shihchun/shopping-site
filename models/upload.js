@@ -14,7 +14,7 @@ const storage = multer.diskStorage({ // diskStorage() 式中用{ settings } 加�
 // init upload as and point the storage -> diskStorage()
 const upload = multer({ // 確認是有權限的人使用
     storage: storage
-});
+}); // 使用 .any 或是 .single 之後無法調用，調用後定義
 
 // const uploadSingle = multer({
 //     storage: storage

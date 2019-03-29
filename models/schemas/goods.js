@@ -8,6 +8,7 @@ var goodSchema = new mongoose.Schema({
     draft: String,
     img_count: Number,
     img: Array,
+    base64: { data: Buffer, contentType: String },
     
     // meta 更新或录入数据的时间记录
     meta: {

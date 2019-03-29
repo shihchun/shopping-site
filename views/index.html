@@ -1,23 +1,16 @@
 {% extends 'layouts/general.html' %}
 {% block content %}
-{% if userlist != '' %}
-<h1 class="text-center">管理員名單</h1>
+
+{% if productCard != '' %}
 <!-- set the grid -->
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
-            {% include "admin/datasets/userlist.html" %}
+        <div class="col-md-2">
         </div>
-    </div>
-</div>
-{% endif %}
-{% if detial != '' %}
-<h1 class="text-center">使用者資料</h1>
-<!-- set the grid -->
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            {% include "admin/datasets/userDetial.html" %}
+        <div class="col-md-8">
+            {% include "datasets/productCard.html" %}
+        </div>
+        <div class="col-md-2">
         </div>
     </div>
 </div>
@@ -25,7 +18,7 @@
 
 
 
-{% if userlist == '' %}
+{% if productCard == '' %}
 <!-- -------------------------start 範例------------------------- -->
 <h1 class="text-center">Test code {{ add }}</h1>
 <!-- -------------------------列表------------------------- -->
