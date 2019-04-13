@@ -26,7 +26,7 @@ const adminRouter = require('./routes/admin');
 
 
 const app = express();
-console.log("\n>>>> app initial " + `Cmd Working directory:\n ${process.cwd()}`)
+console.log("\n>>>> app initial " + `Cmd Working directory:\n ${process.cwd()}`);
 
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');

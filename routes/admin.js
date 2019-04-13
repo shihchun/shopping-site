@@ -8,23 +8,33 @@ const uploadModel = require('../models/upload.js'); // 载入multer上傳檔案
 const f = require('../models/functions.js');
 const fs = require('fs');
 
-const upload = uploadModel.any('pageImage'); // 實例化上傳檔案的 model
+const upload = uploadModel.any('pageImage'); // 實例化上傳檔案的 multer
+const bcrypt = require('bcrypt');
 
-// Controller of the views and model
-// 使用者的部分
-
-router.get('/', function (req, res, next) {
-    userModel.fetch(function (err, result) {
-        if (err) {
-            console.log(err);
-        }
-        res.render('admin/index', {
-            title: '管理員',
-            message: '',
-            userlist: result,
-        });
-    });
-});
+/**
+ * # 數據交互
+ * ✔ jQuery Ajax（Asynchronous JavaScript and XML） // Gmail推出開始漸漸使用
+ * JS操作CSS與DOM（文件物件模型 req content）-> 視覺效果簡單 ↑，現在被大量使用 
+ * 直接在，前段使用對應的代碼即可
+ * ✘ XMLHttpRequest 這個要在server後端（隱藏的代碼），還有HTML前段寫，有人覺得比較安全
+ * var app = express(); //  實例化 after require express.js httpserver module
+ * var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+ * var xhr = new XMLHttpRequest();
+ * app.get('/users', function(req, res, next) {
+ *    res.send({"name": "tom", "age": 24});
+ *  });
+ * <script>
+ * var xhr = new XMLHttpRequest();
+ * xhr.open('get', '/users', true);
+ * xhr.responseType = 'json';
+ * xhr.send(null);
+ * xhr.onreadystatechange = function() {
+ *     if(xhr.status===200 && xhr.readyState===4) {
+ *         console.log(xhr.response);
+ *     }
+ * }    
+ * </script>
+ */
 
 router.get('/login', function (req, res, next) {
     res.render('admin/logins', {
@@ -37,19 +47,12 @@ router.get('/login', function (req, res, next) {
 
 /* POST login page. */
 router.post('/login', function (req, res) {
-    console.log(req.body.user);
-    email = req.body.user.email;
+    // console.log(req.body);
+    account = req.body.user.account;
     password = req.body.user.password;
-    userModel.findOne({
-        email: email,
-        password: password
-    }, function (err, userObj) {
-        if (err) {}
-        if (userObj != null) {
-            if (err) {
-                res.redirect('/admin/login');
-                console.log("loop2 break");
-            }
+    userModel.findOne({account: account}, function (err, userObj) {
+        if (err) {console.log("mongo error>>>"+err);}
+        if (userObj != null || userObj.password === encodePassword(password, usersObj.salt)) {
             res.redirect('/admin');
         } else {
             req.flash('pannel', '使用者不存在或是密碼錯誤');
@@ -67,14 +70,15 @@ router.get('/regesit', function (req, res) {
         herf_login: '/admin/login',
         reg: "註冊",
         log: "登入",
-        user: { // 表單清除
-            DOB: "1997-01-01"
-        },
     });
 });
 
 
+function encodePassword(pwd, salt) {
+    return f.md5(pwd + salt);
+}
 
+/* GET regesit form action. */
 router.post('/users/new', function (req, res) {
     f.User(req.body.user);
     console.log(usersObj);
@@ -85,23 +89,48 @@ router.post('/users/new', function (req, res) {
     if (id) { // id exists 更新數據
         userModel.findOne(query, function (err, result) {
             if (err) {
-                console.log(">>>>>>1>>>>>>" + err);
+                console.log(">>>>>>db find error>>>>>>" + err);
             }
+            
             _users = _underscore.extend(result, usersObj); // 替換字段
+            if(result.passsword != usersObj.password){ // 有改密碼
+                salt = f.makeSalt(6);
+                password = _users.password;
+                _users.salt = salt;
+                _users.password = encodePassword(_users.password, salt);
+            }
             _users.save(function (err, result) {
                 if (err) {
-                    console.log(">>>>>>2>>>>>>" + err);
+                    console.log(">>>>>>mongodb save error>>>>>>" + err);
                 }
+                console.log(result);
                 res.redirect('/admin/users/' + result._id);
             });
         });
     } else { // id not defined 創建
-        if (req.body.password != req.body.repassword) {
-            req.flash('pannel', '兩次密碼不一致');
-            res.redirect('/admin/regesit');
-            res.end();
-        } else {
+        es = 0;
+        if (!/^[a-zA-Z0-9]{6,16}$/.test(usersObj.account) || usersObj.account === 'admin') {
+            req.flash('pannel', 'error:"帳號要6-16位英文字母+數字"');
+            es = 1;
+        }
+        if (!/^[a-zA-Z0-9]{6,16}$/.test(usersObj.password)) {
+            req.flash('pannel', 'error:"密码只能是6-16位英文字母+數字"');
+            es = 1;
+        } else if (usersObj.password !== req.body.user.repassword) {
+            req.flash('pannel', 'error:"兩次密碼不一致"');
+            es = 1;
+        }
+        if (req.body.user.agree){
+            req.flash('pannel', 'error:"未同意條款"');
+            es = 1;
+        }
+        if(es){res.redirect('/admin/regesit');}
+        if(!es) { // 上傳數據
             f.User(req.body.user);
+            salt = f.makeSalt(6);
+            password = usersObj.password;
+            usersObj.salt = salt;
+            usersObj.password = encodePassword(usersObj.password, salt);
             console.log("text >>>> form exports.function >>>>"+ usersObj + ">>>" + JSON.stringify(usersObj, null, 4));
             _users = new userModel(usersObj);
             _users.save(function (err, result) {
@@ -116,6 +145,29 @@ router.post('/users/new', function (req, res) {
     }
 });
 
+router.get('/logout', function (req, res) {
+    req.session.user = null;
+    res.redirect('./login');
+});
+
+//後面需要登入才能使用
+
+// Controller of the views and model
+// 使用者的部分
+router.get('/', function (req, res, next) {
+    userModel.fetch(function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+        res.render('admin/index', {
+            title: '管理員',
+            message: '',
+            userlist: result,
+        });
+    });
+});
+
+
 // user data detail page after regesit
 router.get('/users/:id', function (req, res) {
     var id = req.params.id;
@@ -129,7 +181,7 @@ router.get('/users/:id', function (req, res) {
 
 // user modify
 router.get('/users/update/:id', function (req, res) {
-    var id = req.params.id;
+    var id = req.params.id; //網址上的 :id
     if (id) {
         userModel.findById(id, function (err, result) {
             console.log(result);
@@ -159,7 +211,7 @@ router.get('/user/list/', function (req, res, next) {
 });
 
 // list delete user data (play with html JS) see datasets/userlist.html
-// 異步請求 (need jquery and ajax) 異步請求的方式比較安全&數據完整
+// ajax 異步請求 DELETE (need jquery and ajax)
 router.delete('/users/delete/:id', function (req, res) {
     let query = {
         _id: req.params.id
@@ -173,7 +225,6 @@ router.delete('/users/delete/:id', function (req, res) {
 });
 
 // 商品部分
-
 router.get('/goods', function (req, res, next) {
     userModel.fetch(function (err, result) {
         if (err) {

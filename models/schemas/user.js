@@ -9,6 +9,7 @@ var userSchema = new mongoose.Schema({
     DOB: Date,
     password: String,
     admin: Boolean,
+    salt: String,
     
     // meta 更新或录入数据的时间记录
     meta: {
@@ -33,7 +34,7 @@ userSchema.pre('save', function (next) {
     next();
 });
 
-// xxSchema 模式的静态方法
+// xxSchema 模式的静态方法 定義method使用的基本設定（也可以不設定）
 userSchema.statics = {
     fetch: function (cb) {
         return this

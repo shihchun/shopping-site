@@ -23,7 +23,7 @@ var goodSchema = new mongoose.Schema({
     }
 });
 
-// xxSchema.pre 表示每次存储数据之前都先调用这个方法
+// xxSchema.pre 表示每次存储数据之前都先调用这个方法 mongoose doc meta time settings
 goodSchema.pre('save', function (next) {
     if (this.isNew) {
         this.meta.createAt = this.meta.updateAt = Date.now();
@@ -33,7 +33,7 @@ goodSchema.pre('save', function (next) {
     next();
 });
 
-// xxSchema 模式的静态方法
+// xxSchema 模式的静态方法 定義method使用的基本設定（也可以不設定）
 goodSchema.statics = {
     fetch: function (cb) {
         return this
