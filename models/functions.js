@@ -1,3 +1,6 @@
+exports.BMP24 = require('./pre/BMP24');
+exports.Font = require('./pre/fonts');
+
 /**
  * exports.[function name] = [function name]  require之後直接使用檔案內的函式，檔案內無法調用
  * moudle.exports= [function name]  need instantiation require之後要實例化才可以使用
@@ -8,6 +11,33 @@ var crypto = require('crypto'); // 加密法庫
 var base64Img = require('base64-img'); //圖片格式轉換成 base64 blob
 // var data = base64Img.base64Sync('models/1.jpg');
 
+
+/**
+ * encrypt(), decrpt() use aes-256-ctr
+ * @param {String} text
+ * @returns encrypt text
+ */
+exports.encrypt = function encrypt(text){
+    algorithm = 'aes-256-ctr',
+    password = 'd6F3Efeq';
+    var cipher = crypto.createCipher(algorithm,password)
+    var crypted = cipher.update(text,'utf8','hex')
+    crypted += cipher.final('hex');
+    return crypted;
+}
+/**
+ * encrypt(), decrpt() use aes-256-ctr
+ * @param {String} text
+ * @returns decrpt text
+ */
+exports.decrypt = function decrypt(text){
+    algorithm = 'aes-256-ctr',
+    password = 'd6F3Efeq';
+    var decipher = crypto.createDecipher(algorithm,password)
+    var dec = decipher.update(text,'hex','utf8')
+    dec += decipher.final('utf8');
+    return dec;
+}
 /**
  * generate new uuid
  * @returns uuid (8-4-4-4-12)
@@ -25,7 +55,6 @@ exports.md5 = function md5(str){
 	return crypto.createHash('md5').update(str).digest('hex');
 }
 
-
 /**
  * random value with set
  * @param {*} min min number
@@ -33,6 +62,16 @@ exports.md5 = function md5(str){
  * @returns {string} random num
  */
 function rand(min, max) {
+    return Math.random()*(max-min+1) + min | 0;
+}
+
+/**
+ * random value with set
+ * @param {*} min min number
+ * @param {*} max max number
+ * @returns {string} random num
+ */
+exports.rand = function rand(min, max) {
     return Math.random()*(max-min+1) + min | 0;
 }
 
@@ -176,11 +215,5 @@ exports.appendImg = function appendImg(img){
         tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
         return tmp.buffer;
     };
-}
-
-
-
-exports.MD5 = function() {
-
 }
 

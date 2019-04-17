@@ -8,6 +8,7 @@
     {% if message != '' %}
     <div class="alert alert-danger" role="alert">{{ message }}</div>
     {% endif %}
+
     <div class="form-label-group">
         <input type="text" name="user[account]" id="inputAccount" class="form-control" placeholder="Account" required=""
             autofocus="">
@@ -19,22 +20,14 @@
             required="">
         <label for="inputPassword">密碼</label>
     </div>
+    
     <div class="form-label-group">
-            <input type="text" name="yzm" id="inputYzm" class="form-control" placeholder="yzm"
-                required="">
-            <label for="inputPassword">驗證碼</label>
-            <p>
-                <img src="/user/verify?" id="verify" onclick="this.src+=1" />
-            </p>
+        <input type="text" name="yzm"  class="form-control"  required=""
+            autofocus="">
+        <label for="inputAccount">驗證碼</label>
     </div>
+    <p><img src="/admin/verify?" id="verify" onclick="this.src+=1" height=88px weight=150px/></p>
 
-    <div class="form-label-group">验证码：</div>
-        <input id="yzm" name="yzm" type="text" class="input" maxlength="16" AUTOCOMPLETE="off">
-        <p>
-            <img src="/user/verify?" id="verify" onclick="this.src+=1" />
-        </p>
-    <div class="clear"></div>
-    </div>
     <div class="checkbox mb-3">
         <label>
             <input name="user[rem]" type="checkbox" value="remember-me"> Remember me

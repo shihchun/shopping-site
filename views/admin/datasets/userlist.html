@@ -12,15 +12,15 @@
         </thead>
         <tbody>
             {% for item in userlist %}
-            <tr class="item-id-{{ item._id | safe }}">
+            <tr class="item-id-{{ item.fakeID | safe }}">
                 <td>{{ item.fullname }}</td>
                 <td>{{ item.email }}</td>
                 <td>{{ item.DOB | date('Y-m-d') }}</td>
-                <td><a target="_blank" href="/admin/users/{{ item._id | safe }}"><button class="btn btn-success"
+                <td><a target="_blank" href="/admin/users/{{ item.fakeID | safe }}"><button class="btn btn-success"
                             type="button">查看</button></a></td>
-                <td><a target="_blank" href="/admin/users/update/{{ item._id | safe }}"> <button class="btn btn-warning"
+                <td><a target="_blank" href="/admin/users/update/{{ item.fakeID | safe }}"> <button class="btn btn-warning"
                             type="button">修改</button></a></td>
-                <td><button class="btn btn-danger del" type="button" data-id="{{ item._id | safe }}">刪除</button></td>
+                <td><button class="btn btn-danger del" type="button" data-id="{{ item.fakeID | safe }}">刪除</button></td>
             </tr>
             {% endfor %}
         </tbody>
