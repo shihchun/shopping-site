@@ -28,8 +28,8 @@ function encodePassword(pwd, salt) {
 
 /**
  * # 數據交互
- * ✔ jQuery Ajax（Asynchronous JavaScript and XML） // Gmail推出開始漸漸使用
- * JS操作CSS與DOM（文件物件模型 req content）-> 視覺效果簡單 ↑，現在被大量使用 
+ * ✔ jQuery Ajax（Asynchronous JavaScript and XML） // Gmail推出之後漸漸使用廣泛
+ * JS操作CSS與DOM（文件物件模型 req content）-> 視覺效果設計會簡單很多（有人說的），現在被大量使用 
  * 直接在，前段使用對應的代碼即可
  * ✘ XMLHttpRequest 這個要在server後端（隱藏的代碼），還有HTML前段寫，有人覺得比較安全
  * var app = express(); //  實例化 after require express.js httpserver module
@@ -56,6 +56,7 @@ router.get('/verify', verify.makeCapcha);
 
 /* GET regesit page. */
 router.get('/regesit', function (req, res) {
+    console.log("body "+req.body);
     res.render('admin/logins', {
         title: '管理員註冊',
         message: req.flash('pannel'),
@@ -180,6 +181,8 @@ router.post('/users/new', function (req, res) {
 });
 
 router.get('/login', function (req, res, next) {
+    adminPass = f.md5("a" + "a");
+    console.log(">>>>admin.account:a pass: a encrypt:"+adminPass);
     res.render('admin/logins', {
         title: '管理員登入',
         message: req.flash('pannel'),
@@ -235,14 +238,15 @@ router.get('/logout', function (req, res) {
 
 //此檔案後面需要登入才能使用 
 // session 緩存機制一般在 記憶體内存、cookie、redis、memcached、database
-// 這裡使用  記憶體内存
-router.use(function (req, res, next) {
-    if(req.session.user){
-        next();
-    }else{
-        return res.redirect('/admin/login');
-    }
-});
+// 這裡使用  記憶體内存 如果登出session不存在的話，會無法執行任何請求
+// 如果是異步請求，不會得到 success cb
+// router.use(function (req, res, next) {
+//     if(req.session.user){
+//         next();
+//     }else{
+//         return res.redirect('/admin/login');
+//     }
+// });
 //後面行數需要登入才能使用
 
 // Controller of the views and model
@@ -267,7 +271,6 @@ router.get('/', function (req, res, next) {
         });
     });
 });
-
 
 // user data detail page after regesit
 router.get('/users/:id', function (req, res) {
@@ -321,7 +324,7 @@ router.delete('/users/delete/:id', function (req, res) {
     var id = f.decrypt(req.params.id);
     let query = {
         _id: id
-    }
+    };
     userModel.remove(query, function (err) {
         if (err) {
             console.log(err);
@@ -348,7 +351,7 @@ router.get('/goods', function (req, res, next) {
 router.post('/goods', function (req, res, next) {
     upload(req, res, (err) => { // 實例化已設定接受html id=pageImage的檔案
         if (err) {
-            res.render('admin/index', {
+            return res.render('admin/index', {
                 message: err
             });
         } // passing else : now file is uploaded
@@ -368,7 +371,7 @@ router.post('/goods', function (req, res, next) {
                 //     if (err) {
                 //         console.log(">>>>>> model.save Error: Failed to update record" + err);
                 //     }
-                //     res.redirect('/admin/goods/' + result._id);
+                //     return res.redirect('/admin/goods/' + result._id);
                 // });
             });
         } else { // id not defined (new model)
@@ -382,12 +385,12 @@ router.post('/goods', function (req, res, next) {
                 if (err) {
                     console.log('>>>>>> model.save Error' + err);
                 } else {
-                    console.log('>>>>>> ' + JSON.stringify(result, null, 4));                        
-                    res.redirect('/admin/goods/' + result._id);
+                    console.log('>>>>>> ' + JSON.stringify(result, null, 4));
+                    fakeID = f.encrypt(result.id);
+                    return res.redirect('/admin/goods/' + fakeID);
                 }
             });
         }
-        
     });
 });
 
@@ -409,13 +412,13 @@ router.get('/goods/list/', function (req, res, next) {
 router.delete('/goods/delete/:id', function (req, res) {
     id =f.decrypt(req.params.id);
     let query = {
-        _id: req.params.id
+        _id: id
     }; // point the item by _id
     goodModel.remove(query, function (err) {
         if (err) {
             console.log(err);
         }
-        res.send('Success');
+        res.send('Success'); // 得到這個訊息HTTP 200，會做js動作
     });
 });
 
