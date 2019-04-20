@@ -40,7 +40,7 @@
 <!-- form start POST & enctype="multipart/form-data" for file upload-->
 <form role="form-horizontal" action="/admin/goods" method="post" enctype="multipart/form-data">
     <!-- //- 隐藏表单域，用来更新数据，存储ID -->
-    <input type="hidden" name="goods[_id]" value="{{ product._id | safe }}">
+    <input type="hidden" name="goods[_id]" value="{{ product.fakeID | safe }}">
     <div class="form-label-group">
         <label for="exampleFormControlInput1">商品名稱</label>
         <input type="text" name="goods[name]" class="form-control" id="exampleFormControlInput1" placeholder="商品名稱"
@@ -104,14 +104,6 @@
         <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
     </div>
 </div>
-
-<div id="card" class="card">
-    <img class="card-img-top" src="http://baike.baidu.com/cms/rc/240x112dierzhou.jpg" alt="Card image cap">
-    <div class="card-body">
-        <a href="/goods/{{item._id | safe}}" class="btn btn-primary">查看</a>
-    </div>
-</div>
-
 
 <div class="strong red" id="img_size"></div>
 <textarea id="base64_0"></textarea>

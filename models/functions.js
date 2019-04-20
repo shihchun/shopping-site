@@ -11,33 +11,67 @@ var crypto = require('crypto'); // 加密法庫
 var base64Img = require('base64-img'); //圖片格式轉換成 base64 blob
 // var data = base64Img.base64Sync('models/1.jpg');
 
+/**
+ * remove element from array
+ * if use remove(vowels, "x"); if vowels have one x
+ * two times it will remove the last element
+ * @param {Array} array 
+ * @param {String} element 
+ */
+exports.removeElement = function(arr, element) {removeElement(arr, element);}
+function removeElement(arr, element) {
+    const index = arr.indexOf(element);
+    if (index !== -1) {
+        arr.splice(index, 1);
+    }
+}
+
+/**
+ * encrypt a fakeID to arr.fakeID
+ * @param  {Array} Input Array
+ * @return {Array} Output with FakeID
+ */
+exports.fakeIdArray = function(result){
+    for(i=0; i <= result.length -1; i++){
+            result[i].fakeID = encrypt(result[i].id);
+            result[i]._id = null;
+            de = decrypt(result[i].fakeID);
+            // console.log("\n>>>>>fetch["+i+"]>>>\n"+result[i] +"\n");
+            // console.log("\n>>>>>["+i+"].fakeID>>>\n"+result[i].fakeID +"\n")
+            // console.log("\n>>>>>["+i+"].decrypt>>>\n"+de +"\n");
+        }
+    return result;
+}
 
 /**
  * encrypt(), decrpt() use aes-256-ctr
- * @param {String} text
- * @returns encrypt text
+ * @param {String} plaintext
+ * @returns cyphertext
  */
-exports.encrypt = function encrypt(text){
-    algorithm = 'aes-256-ctr',
+exports.encrypt = function(text){return encrypt(text);}
+function encrypt(text){
+    algorithm = 'aes-256-ctr';
     password = 'd6F3Efeq';
-    var cipher = crypto.createCipher(algorithm,password)
-    var crypted = cipher.update(text,'utf8','hex')
+    var cipher = crypto.createCipher(algorithm,password);
+    var crypted = cipher.update(text,'utf8','hex');
     crypted += cipher.final('hex');
     return crypted;
 }
 /**
  * encrypt(), decrpt() use aes-256-ctr
- * @param {String} text
- * @returns decrpt text
+ * @param {String} cyphertext
+ * @returns plaintext
  */
-exports.decrypt = function decrypt(text){
-    algorithm = 'aes-256-ctr',
+exports.decrypt = function(text){return decrypt(text);}
+function decrypt(text){
+    algorithm = 'aes-256-ctr';
     password = 'd6F3Efeq';
-    var decipher = crypto.createDecipher(algorithm,password)
-    var dec = decipher.update(text,'hex','utf8')
+    var decipher = crypto.createDecipher(algorithm,password);
+    var dec = decipher.update(text,'hex','utf8');
     dec += decipher.final('utf8');
     return dec;
 }
+
 /**
  * generate new uuid
  * @returns uuid (8-4-4-4-12)
@@ -47,11 +81,22 @@ function makeUuid(){
 }
 
 /**
+ * make salt hash 用密碼加鹽得到雜湊值
+ * @param {String} pwd
+ * @param {String} salt 
+ * @returns hash value
+ */
+exports.encodePassword = function(pwd, salt) {
+    return md5(pwd + salt);
+}
+
+/**
  * Generate md5 using crypto
  * @param {*} str 
- * @returns {string}
+ * @returns {string} MD5 hex digits
  */
-exports.md5 = function md5(str){
+exports.md5 = function(str){return md5(str);}
+function md5(str){
 	return crypto.createHash('md5').update(str).digest('hex');
 }
 
@@ -61,6 +106,7 @@ exports.md5 = function md5(str){
  * @param {*} max max number
  * @returns {string} random num
  */
+exports.rand = function(min, max){return rand(min, max);}
 function rand(min, max) {
     return Math.random()*(max-min+1) + min | 0;
 }
@@ -80,7 +126,7 @@ exports.rand = function rand(min, max) {
  * @param {number} len salt length
  * @returns {string} random salt
  */
-exports.makeSalt = function makeSalt(len) {
+exports.makeSalt = function(len) {
     var str = 'qwertyuiop[]asdfghjkl;zxcvbnm,./';
     var salt = '';
     for(var i=0; i<len; i++){
@@ -94,7 +140,7 @@ exports.makeSalt = function makeSalt(len) {
  * @param {string} pageBodys req.body
  * @returns  {string} usersObj is json format
  */
-exports.User = function User(pageBodys) { // when post new product
+exports.User = function(pageBodys) { // when post new product
     usersObj = {
         "account": pageBodys.account,
         "fullname": pageBodys.lastname + pageBodys.firstname,
@@ -115,11 +161,12 @@ exports.User = function User(pageBodys) { // when post new product
  * @param {string} pageBodys req.body
  * @returns {string} goodsObj is json format
  */
-exports.Product = function Product(files, pageBodys) { // when post new product
+exports.Product = function(files, pageBodys) { // when post new product
     var img = []; // 不用 = new Array(); 效率問題
     for (let i = 0; i < files.length; ++i) { // 檔案上傳個數
         console.log("上傳的第" + (i + 1) + "個路徑到: " + files[i].path.slice(6));
-        img[i] = files[i].path.slice(6);
+        // img[i] = files[i].path.slice(6);
+        img[i] = files[i].path;
     }
     // var data = base64Img.base64Sync(files[0].path);
     
@@ -147,7 +194,7 @@ exports.Product = function Product(files, pageBodys) { // when post new product
  * generate secret 128 strings and cookie ID with uuid (8-4-4-4-12)
  * @returns {{secret: string, ID: string}} secret, ID
  */
-exports.makeSecret = function makeSecret() {
+exports.makeSecret = function() {
     var secret = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrswxyz1234567890-=`~!@#$%^&*()_+}{;:/?><.,";
     for (var i = 0; i < 127; i++)
@@ -163,7 +210,7 @@ exports.makeSecret = function makeSecret() {
  * append the images to one ArrayBuffer(one buffer)
  * @param {string} img[] path array
  */
-exports.appendImg = function appendImg(img){
+exports.appendImg = function(img){
     // const pics = ["1.jpg", "2.jpg","3.jpg","4.jpg","5.jpg","6.jpg","7.jpg"]; // input
     // 初始化 arraybuffer
     let buffers = new ArrayBuffer(0);
@@ -207,7 +254,6 @@ exports.appendImg = function appendImg(img){
             return imgv;
         });
     }
-
     // arraybuffer
     var _appendBuffer = function(buffer1, buffer2) {
         var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);

@@ -21,36 +21,6 @@ function encodePassword(pwd, salt) {
     return f.md5(pwd + salt);
 }
 
-/**
- * 網址雜湊使用 fakeSalt = "g.xrqg"; 跟db _id做雜湊出假的 id當網址
-*/
-
-
-/**
- * # 數據交互
- * ✔ jQuery Ajax（Asynchronous JavaScript and XML） // Gmail推出之後漸漸使用廣泛
- * JS操作CSS與DOM（文件物件模型 req content）-> 視覺效果設計會簡單很多（有人說的），現在被大量使用 
- * 直接在，前段使用對應的代碼即可
- * ✘ XMLHttpRequest 這個要在server後端（隱藏的代碼），還有HTML前段寫，有人覺得比較安全
- * var app = express(); //  實例化 after require express.js httpserver module
- * var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
- * var xhr = new XMLHttpRequest();
- * app.get('/users', function(req, res, next) {
- *    res.send({"name": "tom", "age": 24});
- *  });
- * <script>
- * var xhr = new XMLHttpRequest();
- * xhr.open('get', '/users', true);
- * xhr.responseType = 'json';
- * xhr.send(null);
- * xhr.onreadystatechange = function() {
- *     if(xhr.status===200 && xhr.readyState===4) {
- *         console.log(xhr.response);
- *     }
- * }    
- * </script>
- */
-
 // 產生驗證碼 在html加上 '/verify/?'，來使用
 router.get('/verify', verify.makeCapcha); 
 
@@ -101,6 +71,7 @@ router.post('/users/new', function (req, res) {
         userModel.findById(query, function (err, result) {
             if (err) {
                 console.log(">>>>>>db find error>>>>>>" + err);
+                return res.json(err);
             }
             usersObj = f.User(req.body.user); // getUser
             console.log(">>>>>ID>>>>"+id);
@@ -112,13 +83,13 @@ router.post('/users/new', function (req, res) {
                 salt = f.makeSalt(6);
                 password = _users.password;
                 _users.salt = salt;
-                _users.password = encodePassword(_users.password, salt);
+                _users.password = f.encodePassword(_users.password, salt);
                 console.log(">>>users>>>\n"+ _users);
             }
-            _users = _underscore.extend(result, usersObj); // 替換字段
             _users.save(function (err, result) {
                 if (err) {
                     console.log(">>>>>>mongodb save error>>>>>>" + err);
+                    return res.json(err);
                 }
                 console.log(result);
                 fakeID = f.encrypt(id);
@@ -165,12 +136,13 @@ router.post('/users/new', function (req, res) {
         salt = f.makeSalt(6);
         password = usersObj.password;
         usersObj.salt = salt;
-        usersObj.password = encodePassword(usersObj.password, salt);
+        usersObj.password = f.encodePassword(usersObj.password, salt);
         console.log(">>>> usersObj >>>>>>>" + JSON.stringify(usersObj, null, 4));
         _users = new userModel(usersObj);
         _users.save(function (err, result) {
             if (err) {
                 console.log('>>>>>> model.save Error');
+                return res.json(err);
             } else {
                 console.log('>>>>>> ' + JSON.stringify(result, null, 4));
                 fakeID = f.encrypt(result.id);
@@ -181,7 +153,8 @@ router.post('/users/new', function (req, res) {
 });
 
 router.get('/login', function (req, res, next) {
-    adminPass = f.md5("a" + "a");
+    adminPass = f.md5("a" + "a"); // Admin，加鹽密碼
+    adminPass = f.encodePassword("a", "a")
     console.log(">>>>admin.account:a pass: a encrypt:"+adminPass);
     res.render('admin/logins', {
         title: '管理員登入',
@@ -205,19 +178,19 @@ router.post('/login', function (req, res) {
         if (err) return err;
         // findOne 如果沒有資料的話直接錯誤，所以不用這個，除非直接傳送新的http response不然會有問題
         // find 返回一個 [{objects, objects...}]的 json array，因為註冊機制的關係不會重複
-        if(userObj==""){ 
-            console.log("使用者不存在");
+        if(userObj.length == 0){ 
             req.flash('pannel', '使用者不存在');
-            res.redirect('/admin/login');
+            return res.redirect('/admin/login');
         }
         else{
-            console.log("encode from insert>>>>>>"+ encodePassword(password, userObj[0].salt));
-            console.log("database>>>>>>>" + userObj[0].password);
-            if (userObj[0].password === encodePassword(password, userObj[0].salt)) {
+            if (userObj[0].password === f.encodePassword(password, userObj[0].salt)) {
                 // 建立會話 session 以雜湊密碼後的密碼+之前亂數salt，再行雜湊
-                req.session.user = encodePassword(userObj[0].password, userObj[0].salt);
+                // req.session.user = f.encodePassword(userObj[0].password, userObj[0].salt);
+                // req.session.get = f.encrypt(userObj[0].account);
+                passphrase = f.encodePassword(userObj[0].password, userObj[0].salt);
+                account = f.encrypt(userObj[0].account);
+                req.session.user = {account: account, passphrase: passphrase};
                 console.log(req.session);
-                console.log(userObj);
                 return res.redirect('/admin');
             } else {
                 req.flash('pannel', '密碼錯誤');
@@ -230,8 +203,14 @@ router.post('/login', function (req, res) {
 router.get('/logout', function (req, res) {
     // Error: req.flash() requires sessions
     // req.session.destroy(); // 刪除所有會話Express.session這個方法包括cookie
+    if (req.session.user){
+        account = f.decrypt(req.session.user.account);
+        req.session.user = null; //只有刪除一個會話
+        req.flash('pannel', "mesage: "+account+ " 您已經登出"); //這會使用到cookie
+        return res.redirect('/admin/login');
+    }
     req.session.user = null; //只有刪除一個會話
-    req.flash('pannel', "mesage:'已經登出'"); //這會使用到cookie
+    req.flash('pannel', "mesage: '沒有登入'"); //這會使用到cookie
     return res.redirect('/admin/login');
     // return res.json({mesage:'已經登出'});
 });
@@ -253,21 +232,16 @@ router.get('/logout', function (req, res) {
 // 使用者的部分
 router.get('/', function (req, res, next) {
     userModel.fetch(function (err, result) {
-        // mongoose 返回的 .id 不可寫，所以建立一個fakeID當 URL
-        for(i=0; i <= result.length -1; i++){
-            result[i].fakeID = f.encrypt(result[i].id);
-            de = f.decrypt(result[i].fakeID);
-            console.log("\n>>>>>fetch["+i+"]>>>\n"+result[i] +"\n");
-            console.log("\n>>>>>["+i+"].fakeID>>>\n"+result[i].fakeID +"\n")
-            console.log("\n>>>>>["+i+"].decrypt>>>\n"+de +"\n");
-        }
         if (err) {
             console.log(err);
+            return res.json(err);
         }
+        arr = f.fakeIdArray(result);
+        console.log("arr>>>\n" + arr);
         res.render('admin/index', {
             title: '管理員',
             message: '',
-            userlist: result,
+            userlist: arr,
         });
     });
 });
@@ -277,6 +251,8 @@ router.get('/users/:id', function (req, res) {
     //網址上的 :id = req.params.id
     var id = f.decrypt(req.params.id);
     userModel.findById(id, function (err, result) {
+        result.fakeID = f.encrypt(result.id);
+        result._id = null;
         console.log("\n>>>findById>>>\n"+result);
         res.render('admin/index', {
             title: '您好，' + result.firstname,
@@ -290,8 +266,8 @@ router.get('/users/update/:id', function (req, res) {
     var id = f.decrypt(req.params.id); 
     if (id) {
         userModel.findById(id, function (err, result) {
-            // console.log("\n>>>findById>>>\n"+result);
             result.fakeID = f.encrypt(result.id);
+            result._id = null;
             res.render('admin/logins', {
                 title: '管理員註冊',
                 log: "登入",
@@ -309,11 +285,14 @@ router.get('/user/list/', function (req, res, next) {
     userModel.fetch(function (err, result) {
         if (err) {
             console.log(err);
+            return res.json(err);
         }
+        arr = f.fakeIdArray(result);
+        console.log("arr>>>\n" + arr);
         res.render('admin/index', {
             title: '管理員',
             message: '',
-            userlist: result,
+            userlist: arr,
         });
     });
 });
@@ -328,6 +307,7 @@ router.delete('/users/delete/:id', function (req, res) {
     userModel.remove(query, function (err) {
         if (err) {
             console.log(err);
+            return res.json(err);
         }
         res.send('Success');
     });
@@ -338,6 +318,7 @@ router.get('/goods', function (req, res, next) {
     userModel.fetch(function (err, result) {
         if (err) {
             console.log(err);
+            return res.json(err);
         }
         res.render('admin/goodsAdd', {
             title: '管理員',
@@ -351,11 +332,9 @@ router.get('/goods', function (req, res, next) {
 router.post('/goods', function (req, res, next) {
     upload(req, res, (err) => { // 實例化已設定接受html id=pageImage的檔案
         if (err) {
-            return res.render('admin/index', {
-                message: err
-            });
+            return res.render('admin/index', {message: err});
         } // passing else : now file is uploaded
-        console.log(req); // req detial
+        // console.log(req); // req detial
         var id = req.body.goods._id;
         let query = { // point the item by _id
             _id: id
@@ -365,6 +344,7 @@ router.post('/goods', function (req, res, next) {
             goodModel.findOne(query, function (err, result) {
                 if (err) {
                     console.log(">>>>>>1>>>>>>" + err);
+                    return res.json(err);
                 }
                 _goods = _underscore.extend(result, goodsObj); // 替換字段
                 // _goods.save(function (err, result) {
@@ -376,7 +356,7 @@ router.post('/goods', function (req, res, next) {
             });
         } else { // id not defined (new model)
             f.Product(req.files, req.body);
-            _goods = new goodModel(goodsObj); // 定義json不用使用var，_goods是一個json文件
+            _goods = new goodModel(goodsObj); // _goods是一個array
             var data = fs.readFileSync('models/1.jpg');
             _goods.base64.data = data;
             _goods.base64.contentType = 'image/png';
@@ -384,6 +364,7 @@ router.post('/goods', function (req, res, next) {
             _goods.save(function (err, result) {
                 if (err) {
                     console.log('>>>>>> model.save Error' + err);
+                    return res.json(err);
                 } else {
                     console.log('>>>>>> ' + JSON.stringify(result, null, 4));
                     fakeID = f.encrypt(result.id);
@@ -398,11 +379,14 @@ router.get('/goods/list/', function (req, res, next) {
     goodModel.fetch(function (err, result) {
         if (err) {
             console.log(err);
+            return res.json(err);
         }
+        arr = f.fakeIdArray(result);
+        console.log("arr>>>\n" + arr);
         res.render('admin/index', {
             title: '商品列表',
             message: '',
-            productlist: result,
+            productlist: arr,
         });
     });
 });
@@ -410,13 +394,14 @@ router.get('/goods/list/', function (req, res, next) {
 // list delete user data (play with html JS) see datasets/userlist.html
 // 異步請求 (need jquery and ajax) 異步請求的方式比較安全&數據完整
 router.delete('/goods/delete/:id', function (req, res) {
-    id =f.decrypt(req.params.id);
+    id = f.decrypt(req.params.id);
     let query = {
         _id: id
     }; // point the item by _id
     goodModel.remove(query, function (err) {
         if (err) {
             console.log(err);
+            return res.json(err);
         }
         res.send('Success'); // 得到這個訊息HTTP 200，會做js動作
     });
@@ -427,7 +412,8 @@ router.get('/goods/update/:id', function (req, res) {
     var id = f.decrypt(req.params.id);
     if (id) {
         goodModel.findById(id, function (err, result) {
-            console.log(result);
+            result.fakeID = f.encrypt(result.id);
+            result._id = null;
             res.render('admin/goodsAdd', {
                 title: '商品更新',
                 message: 'modify goods info',
@@ -442,6 +428,8 @@ router.get('/goods/update/:id', function (req, res) {
 router.get('/goods/:id', function (req, res) {
     var id = f.decrypt(req.params.id);
     goodModel.findById(id, function (err, result) {
+        esult.fakeID = f.encrypt(result.id);
+        result._id = null;
         res.render('admin/index', {
             // result 是之前實例化的 Model
             productDetial: result
