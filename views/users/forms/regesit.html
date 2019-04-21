@@ -1,0 +1,92 @@
+<form class="form-signin" method="post" action="/users/account/new">
+    <div class="text-center mb-4">
+        <div class="row">
+        </div>
+        <img class="mb-4" src="/img/user-pngrepo-com.png" style="display:none" alt="" width="200" height="200">
+        <h1 class="h3 mb-3 font-weight-normal">{{ cmstype }}</h1>
+    </div>
+    {% if alert != '' %}
+    <div class="alert alert-warning" role="alert">{{ alert }}</div>
+    {% endif %}
+    {% if message != '' %}
+    <div class="alert alert-danger" role="alert">{{ message }}</div>
+    {% endif %}
+    
+    <!-- //- 隐藏表单域，用来更新数据，存储ID -->
+    <input type="hidden"   name="user[_id]"  value="{{ users.fakeID | safe }}"/>
+    
+    <div class="form-label-group">
+        <input type="text" name="user[account]" id="inputAccount" class="form-control" placeholder="account"
+            required="" autofocus="" value="{{ users.account }}">
+        <label for="inputAccount">帳號</label>
+    </div>
+    
+    <div class="form-label-group">
+        <input type="text" name="user[lastname]" id="inputLastname" class="form-control" placeholder="Last name"
+            required="" autofocus="" value="{{ users.lastname }}">
+        <label for="inputLastname">姓氏</label>
+    </div>
+    <div class="form-label-group">
+        <input type="text" name="user[firstname]" id="inputFirstname" class="form-control" placeholder="First name"
+            required="" autofocus="" value="{{ users.firstname }}">
+        <label for="inputFirstname">名字</label>
+    </div>
+    <div class="form-label-group">
+        <input type="email" name="user[email]" id="inputEmail" class="form-control" placeholder="Email address"
+            required="" autofocus="" value="{{ users.email }}">
+        <label for="inputEmail">Email</label>
+    </div>
+    <div class="form-label-group">
+        <input type="password" name="user[password]" id="inputPassword" class="form-control" placeholder="Password"
+            required="" value="{{ users.password }}">
+        <label for="inputPassword">密碼</label>
+    </div>
+    <div class="form-label-group">
+        <input type="password" name="user[repassword]" id="inputRepassword" class="form-control" placeholder="Password"
+            required="" value="{{ users.password }}">
+        <label for="inputPassword">在再輸一次</label>
+    </div>
+    <div class="form-group mb-3">
+        <!-- formate of date: value="12-02-2012" -->
+        <input type="DOB" name="user[DOB]" id="inputDOB" class="form-control" placeholder="出生日期" required=""
+            autofocus="" value="{{ users.DOB | date('Y-m-d')}}">
+    </div>
+    <div class="form-label-group">
+        <input type="text" name="yzm"  class="form-control"  required=""
+            autofocus="">
+        <label for="inputAccount">驗證碼</label>
+    </div>
+    <p><img src="/admin/verify?" id="verify" onclick="this.src+=1" height=88px weight=150px/></p>
+    <div class="checkbox mb-3">
+        <label>
+            <input name="agree" type="checkbox" value="1"> 同意服務條款
+        </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">{{ reg }}</button>
+    <p></p>
+    <div class="text-center mb-4">
+        <p>已經註冊？ <a href="{{ herf_login }}"> {{ log }}</a></p>
+        <p><a href="/">回首頁</a></p>
+    </div>
+    <p class="mt-5 mb-3 text-muted text-center">© <a href="https://shihchun.github.io">ShihChun</a> </p>
+</form>
+<!-- <link href="/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+<script src="/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="/libs/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-TW.min.js"
+    charset="UTF-8"></script> -->
+<!-- cdn -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.zh-TW.min.js" charset="UTF-8"></script>
+<script>
+    $('#inputDOB').datepicker({
+        // uiLibrary: 'bootstrap4', // for gijgo datepicker
+        clearBtn: true,
+        format: 'yyyy-mm-dd',
+        orientation: 'top', //顯示在下方 bootstrap-datepicker.js有bug 657行
+        autoclose: true,
+        startDate: '-100y',
+        endDate: '-10y',
+        language: "zh-TW"
+    });
+</script>

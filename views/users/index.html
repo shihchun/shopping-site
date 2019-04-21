@@ -1,0 +1,28 @@
+{% extends '../layouts/general.html' %}
+{% block content %}
+{% if message != '' %}
+<div class="alert alert-danger" role="alert">{{ message }}</div>
+{% endif %}
+<!-- userpart -->
+{% if userlist != '' %}
+<h1 class="text-center">使用者名單</h1>
+<!-- set the grid -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% include "datasets/userlist.html" %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if detial != '' %}
+<h1 class="text-center">使用者資料</h1>
+<!-- set the grid -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% include "datasets/userDetial.html" %}
+        </div>
+    </div>
+</div>
+{% endif %}

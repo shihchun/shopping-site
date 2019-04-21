@@ -1,6 +1,6 @@
-<!doctype html>
-<html lang="zh-Hant-TW">
-
+<!-- <!doctype html> -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="zh-Hant-TW" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     {% block head %}
     <meta charset="utf-8">
@@ -27,9 +27,11 @@
     {% block header %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/">
-            <img class="d-inline-block align-top" src="/img/F0D6A03DBC9FD2C154880CA915251D352.gif" width="200" height="50" alt="" />
+            <img class="d-inline-block align-top" src="/img/F0D6A03DBC9FD2C154880CA915251D352.gif" width="200"
+                height="50" alt="" />
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -41,39 +43,41 @@
                     <a class="nav-link" href="#">Link</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        管理員
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="/admin/user/list/">使用者名單</a>
+                        <a class="dropdown-item" href="/admin/goods/list/">商品列表</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item" href="/admin/user/list/">管理員名單</a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
+                    <a class="nav-link" href="/admin/goods">新增新商品</a>
                 </li>
             </ul>
-            {% block login %}
             <ul class="navbar-nav text-right">
                 <li class="nav-item">
-                    <a class="nav-link" href="/cart">購物車</a>
+                    <a class="nav-link" href="/cart">訊息</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/login">登入</a>
+                    <a class="nav-link" href="/users/settings">設定</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="/regesit">註冊</a>
+                        <a class="nav-link" href="/users/login">登入</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/users/logout">登出</a>
                 </li>
             </ul>
-            {% endblock %}
         </div>
     </nav>
     {% endblock %}
 </header>
 
-<body>
+<body class="wrapperr">
     <!-- <script type="text/javascript" color="192,192,192" opacity='0.7' zIndex="-2" count="100" src="/js/canvas-nest/canvas-nest.js"></script> -->
     <section class="wrapper">
         {% block content %}{% endblock %}
@@ -118,12 +122,13 @@
                     <div class="col-md-3 col-sm-6">
                         <!-- Column1-->
                         <div class="footer-pad">
-                            <h4>Website Information</h4>
+                            <h4>資訊</h4>
                             <ul class="list-unstyled">
-                                <li><a href="#">Website Tutorial</a></li>
-                                <li><a href="#">Accessibility</a></li>
-                                <li><a href="#">Disclaimer</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="/admin/cust/">使用者名單</a></li>
+                                <li><a href="/admin/goods/list/">商品列表</a></li>
+                                <li><a href="/admin/user/list/">管理員名單</a></li>
+                                <li><a href="/admin/goods">新增新商品</a></li>
+                                <li><a href="/admin">Index</a></li>
                                 <li><a href="#">FAQs</a></li>
                                 <li><a href="#">Webmaster</a></li>
                             </ul>
@@ -135,9 +140,9 @@
                             <h4>管理員</h4>
                             <ul class="list-unstyled">
                                 <li><a href="/admin/login">登入</a></li>
+                                <li><a href="/admin/logout">登出</a></li>
                                 <li><a href="/admin/regesit">註冊</a></li>
                                 <li><a href="#">忘記密碼</a></li>
-                                <li><a href="/admin">Fire</a></li>
                                 <li><a href="#">Mayor and City Council</a></li>
                                 <li><a href="#"></a></li>
                             </ul>
@@ -151,7 +156,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <!-- Footer Bottom-->
-                        <p class="text-xs-center">© Copyright ???????????.</p>
+                        <p class="text-xs-center">© Copyright ?????.</p>
                     </div>
                 </div>
             </div>

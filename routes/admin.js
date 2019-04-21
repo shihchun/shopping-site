@@ -4,12 +4,28 @@ const _underscore = require('underscore'); // _.extend用新对象里的字段�
 
 const userModel = require('../models/users.js'); // 载入mongoose编译后的模型
 const goodModel = require('../models/goods.js'); // 载入mongoose编译后的模型
+const customerModel = require('../models/customer.js'); // 载入mongoose编译后的模型
 const uploadModel = require('../models/upload.js'); // 载入multer上傳檔案
 const f = require('../models/functions.js');
 const verify = require('../models/verify.js');
-const fs = require('fs');
 
 const upload = uploadModel.any('pageImage'); // 實例化上傳檔案的 multer
+
+router.get('/cust', function (req, res, next) {
+    customerModel.fetch(function (err, result) {
+        if (err) {
+            console.log(err);
+            return res.json(err);
+        }
+        arr = f.fakeIdArray(result);
+        console.log("arr>>>\n" + arr);
+        res.render('users/index', {
+            title: '使用者',
+            message: '',
+            userlist: arr,
+        });
+    });
+});
 
 // 產生驗證碼 在html加上 '/verify/?'，來使用
 router.get('/verify', verify.makeCapcha);
@@ -30,10 +46,10 @@ router.get('/regesit', function (req, res) {
 /* GET regesit form action. */
 router.post('/users/new', function (req, res) {
     usersObj = f.User(req.body.user); // getUser
-    id = usersObj._id;
-    console.log(id);
-    if (id) { // id exists 更新數據
-        id = f.decrypt(req.body.user._id);
+    var fakeID = usersObj._id;
+    console.log(fakeID);
+    if (fakeID) { // id exists 更新數據
+        id = f.decrypt(fakeID);
         es = 0;
         if (!verify.verify(req, req.body.yzm)) {
             req.flash('pannel', '驗證碼錯誤');
@@ -66,16 +82,14 @@ router.post('/users/new', function (req, res) {
             usersObj = f.User(req.body.user); // getUser
             console.log(">>>>>ID>>>>" + id);
             usersObj._id = id;
-
             if (result.password != usersObj.password) { // 有改密碼
-                _users = _underscore.extend(result, usersObj); // 替換字段
-                console.log(">>>>CHANGE PASSWD>>>>>");
                 salt = f.makeSalt(6);
-                password = _users.password;
-                _users.salt = salt;
-                _users.password = f.encodePassword(_users.password, salt);
+                password = usersObj.password;
+                usersObj.salt = salt;
+                usersObj.password = f.encodePassword(usersObj.password, salt);
                 console.log(">>>users>>>\n" + _users);
             }
+            _users = _underscore.extend(result, usersObj); // 替換字段
             _users.save(function (err, result) {
                 if (err) {
                     console.log(">>>>>>mongodb save error>>>>>>" + err);
@@ -184,7 +198,7 @@ router.post('/login', function (req, res) {
                 // req.session.get = f.encrypt(userObj[0].account);
                 account = f.encrypt(userObj[0].account);
                 passphrase = f.encodePassword(userObj[0].password, userObj[0].salt);
-                req.session.user = {
+                req.session.admin = {
                     account: account,
                     passphrase: passphrase
                 };
@@ -218,7 +232,7 @@ router.get('/logout', function (req, res) {
 // app.use(function(err, req, res, next){}
 // 後面行數，在每一個請求被處理之前都會執行的 middleware
 // router.use(function (req, res, next) {
-//     if(req.session.user){
+//     if(req.session.admin){
 //         next();
 //     }else{
 //         return res.redirect('/admin/login');
