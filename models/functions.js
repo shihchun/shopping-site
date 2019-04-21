@@ -27,7 +27,7 @@ function removeElement(arr, element) {
 }
 
 /**
- * encrypt a fakeID to arr.fakeID
+ * encrypt a fakeID to arr.fakeID, let arr.id = null;
  * @param  {Array} Input Array
  * @return {Array} Output with FakeID
  */

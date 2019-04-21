@@ -15,15 +15,10 @@ const mongoose = require('mongoose'); // 加载mongoose來操作mongodb
 mongoose.connect('mongodb://localhost:27017/shopping-site', {useNewUrlParser: true});
 console.log('MongoDB connection success!');
 
-// passport 認證加密套件 require session //
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-
 // include other Routers //
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const adminRouter = require('./routes/admin');
-
 
 const app = express();
 console.log("\n>>>> app initial " + `Cmd Working directory:\n ${process.cwd()}`);
@@ -60,10 +55,6 @@ app.use(session({
     /*secure: true,用了會沒cookie*/
   }
 }));
-
-// passport.js middleware inisial setting //
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

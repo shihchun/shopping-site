@@ -20,6 +20,22 @@ router.get('/', function (req, res, next) {
   });
 });
 
+/* GET home page. */
+router.get('/admin/ll', function (req, res, next) {
+  let query = {draft: '上架'};
+  
+  // base64Img.base64('../models/1.jpg', function(err, data) {console.log(data);})
+  // var data = base64Img.base64Sync('models/1.jpg');
+  // console.log(data);
+  goodModel.find( query, function (err, result) {
+      res.render('index', {
+          title: '首頁',
+          message: '',
+          productCard: result,
+      });
+  });
+});
+
 // goods data detail page after upload
 router.get('/goods/:id', function (req, res) {
   var id = req.params.id;

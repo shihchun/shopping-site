@@ -217,15 +217,15 @@ router.get('/logout', function (req, res) {
 
 //此檔案後面需要登入才能使用 
 // session 緩存機制一般在 記憶體内存、cookie、redis、memcached、database
-// 這裡使用  記憶體内存 如果登出session不存在的話，會無法執行任何請求
-// 如果是異步請求，不會得到 success cb
-// router.use(function (req, res, next) {
-//     if(req.session.user){
-//         next();
-//     }else{
-//         return res.redirect('/admin/login');
-//     }
-// });
+// app.use(function(err, req, res, next){}
+// 後面行數，在每一個請求被處理之前都會執行的 middleware
+router.use(function (req, res, next) {
+    if(req.session.user){
+        next();
+    }else{
+        return res.redirect('/admin/login');
+    }
+});
 //後面行數需要登入才能使用
 
 // Controller of the views and model
@@ -431,7 +431,6 @@ router.get('/goods/:id', function (req, res) {
         esult.fakeID = f.encrypt(result.id);
         result._id = null;
         res.render('admin/index', {
-            // result 是之前實例化的 Model
             productDetial: result
         });
     });
