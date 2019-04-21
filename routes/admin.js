@@ -16,7 +16,7 @@ router.get('/verify', verify.makeCapcha);
 
 /* GET regesit page. */
 router.get('/regesit', function (req, res) {
-    console.log("body "+req.body);
+    console.log("body " + req.body);
     res.render('admin/logins', {
         title: '管理員註冊',
         message: req.flash('pannel'),
@@ -35,25 +35,25 @@ router.post('/users/new', function (req, res) {
     if (id) { // id exists 更新數據
         id = f.decrypt(req.body.user._id);
         es = 0;
-        if(!verify.verify(req, req.body.yzm)){
+        if (!verify.verify(req, req.body.yzm)) {
             req.flash('pannel', '驗證碼錯誤');
             es = 1;
         }
         if (!/^[a-zA-Z0-9]{6,16}$/.test(usersObj.account) || usersObj.account === 'admin') {
             req.flash('pannel', 'error:"帳號要6-16位英文字母+數字"');
         }
-        if (!/^[a-zA-Z0-9]{6,16}$/.test(usersObj.password)&& req.body.user.password != usersObj.password) {
+        if (!/^[a-zA-Z0-9]{6,16}$/.test(usersObj.password) && req.body.user.password != usersObj.password) {
             req.flash('pannel', 'error:"密码只能是6-16位英文字母+數字"');
             es = 1;
         } else if (usersObj.password !== req.body.user.repassword) {
             req.flash('pannel', 'error:"兩次密碼不一致"');
             es = 1;
         }
-        if (!req.body.agree){
+        if (!req.body.agree) {
             req.flash('pannel', 'error:"未同意條款"');
             es = 1;
         }
-        if(es){
+        if (es) {
             fakeID = f.encrypt(req.body.user._id);
             return res.redirect('/admin/users/update/' + fakeID);
         }
@@ -64,17 +64,17 @@ router.post('/users/new', function (req, res) {
                 return res.json(err);
             }
             usersObj = f.User(req.body.user); // getUser
-            console.log(">>>>>ID>>>>"+id);
+            console.log(">>>>>ID>>>>" + id);
             usersObj._id = id;
-           
-            if(result.password != usersObj.password){ // 有改密碼
+
+            if (result.password != usersObj.password) { // 有改密碼
                 _users = _underscore.extend(result, usersObj); // 替換字段
                 console.log(">>>>CHANGE PASSWD>>>>>");
                 salt = f.makeSalt(6);
                 password = _users.password;
                 _users.salt = salt;
                 _users.password = f.encodePassword(_users.password, salt);
-                console.log(">>>users>>>\n"+ _users);
+                console.log(">>>users>>>\n" + _users);
             }
             _users.save(function (err, result) {
                 if (err) {
@@ -88,7 +88,7 @@ router.post('/users/new', function (req, res) {
         });
     } else { // id not defined 創建
         es = 0;
-        if(!verify.verify(req, req.body.yzm)){
+        if (!verify.verify(req, req.body.yzm)) {
             req.flash('pannel', '驗證碼錯誤');
             es = 1;
         }
@@ -102,24 +102,28 @@ router.post('/users/new', function (req, res) {
             req.flash('pannel', 'error:"兩次密碼不一致"');
             es = 1;
         }
-        if (!req.body.agree){
+        if (!req.body.agree) {
             req.flash('pannel', 'error:"未同意條款"');
             es = 1;
         }
-        if(es){
+        if (es) {
             return res.redirect('/admin/regesit');
         }
-        userModel.find({ account: req.body.user.account}, function (err, usersObj) {
+        userModel.find({
+            account: req.body.user.account
+        }, function (err, usersObj) {
             if (err) return err;
-            if(usersObj.length != 0){ 
-                req.flash('pannel', '使用者已經存在'); 
+            if (usersObj.length != 0) {
+                req.flash('pannel', '使用者已經存在');
                 return res.redirect('/admin/regesit');
             }
         });
-        userModel.find({ email: req.body.user.email}, function (err, usersObj) {
+        userModel.find({
+            email: req.body.user.email
+        }, function (err, usersObj) {
             if (err) return err;
-            if(usersObj.length != 0){
-                req.flash('pannel', 'Email已經存在'); 
+            if (usersObj.length != 0) {
+                req.flash('pannel', 'Email已經存在');
                 return res.redirect('/admin/regesit');
             }
         });
@@ -145,7 +149,7 @@ router.post('/users/new', function (req, res) {
 router.get('/login', function (req, res, next) {
     adminPass = f.md5("a" + "a"); // Admin，加鹽密碼
     adminPass = f.encodePassword("a", "a")
-    console.log(">>>>admin.account:a pass: a encrypt:"+adminPass);
+    console.log(">>>>admin.account:a pass: a encrypt:" + adminPass);
     res.render('admin/logins', {
         title: '管理員登入',
         message: req.flash('pannel'),
@@ -159,27 +163,31 @@ router.post('/login', function (req, res) {
     // console.log(req.body);
     account = req.body.user.account;
     password = req.body.user.password;
-    if(!verify.verify(req, req.body.yzm)){
+    if (!verify.verify(req, req.body.yzm)) {
         req.flash('pannel', '驗證碼錯誤');
         // 如果直接不是用return的話會報錯 Cannot set headers after they are sent to the client
         return res.redirect('/admin/login');
     }
-    userModel.find({ account: account}, function (err, userObj) {
+    userModel.find({
+        account: account
+    }, function (err, userObj) {
         if (err) return err;
         // findOne 如果沒有資料的話直接錯誤，所以不用這個，除非直接傳送新的http response不然會有問題
         // find 返回一個 [{objects, objects...}]的 json array，因為註冊機制的關係不會重複
-        if(userObj.length == 0){ 
+        if (userObj.length == 0) {
             req.flash('pannel', '使用者不存在');
             return res.redirect('/admin/login');
-        }
-        else{
+        } else {
             if (userObj[0].password === f.encodePassword(password, userObj[0].salt)) {
                 // 建立會話 session 以雜湊密碼後的密碼+之前亂數salt，再行雜湊
                 // req.session.user = f.encodePassword(userObj[0].password, userObj[0].salt);
                 // req.session.get = f.encrypt(userObj[0].account);
                 account = f.encrypt(userObj[0].account);
                 passphrase = f.encodePassword(userObj[0].password, userObj[0].salt);
-                req.session.user = {account: account, passphrase: passphrase};
+                req.session.user = {
+                    account: account,
+                    passphrase: passphrase
+                };
                 console.log(req.session);
                 return res.redirect('/admin');
             } else {
@@ -193,10 +201,10 @@ router.post('/login', function (req, res) {
 router.get('/logout', function (req, res) {
     // Error: req.flash() requires sessions
     // req.session.destroy(); // 刪除所有會話Express.session這個方法包括cookie
-    if (req.session.user){
+    if (req.session.user) {
         account = f.decrypt(req.session.user.account);
         req.session.user = null; //只有刪除一個會話
-        req.flash('pannel', "mesage: "+account+ " 您已經登出"); //這會使用到cookie
+        req.flash('pannel', "mesage: " + account + " 您已經登出"); //這會使用到cookie
         return res.redirect('/admin/login');
     }
     req.session.user = null; //只有刪除一個會話
@@ -230,7 +238,7 @@ router.get('/', function (req, res, next) {
         console.log("arr>>>\n" + arr);
         res.render('admin/index', {
             title: '管理員',
-            message: 'asdf',
+            message: '',
             userlist: arr,
         });
     });
@@ -243,7 +251,7 @@ router.get('/users/:id', function (req, res) {
     userModel.findById(id, function (err, result) {
         result.fakeID = f.encrypt(result.id);
         result._id = null;
-        console.log("\n>>>findById>>>\n"+result);
+        console.log("\n>>>findById>>>\n" + result);
         res.render('admin/index', {
             title: '您好，' + result.firstname,
             detial: result
@@ -253,7 +261,7 @@ router.get('/users/:id', function (req, res) {
 
 // user modify
 router.get('/users/update/:id', function (req, res) {
-    var id = f.decrypt(req.params.id); 
+    var id = f.decrypt(req.params.id);
     if (id) {
         userModel.findById(id, function (err, result) {
             result.fakeID = f.encrypt(result.id);
@@ -322,13 +330,15 @@ router.get('/goods', function (req, res, next) {
 router.post('/goods/new', function (req, res, next) {
     upload(req, res, (err) => { // 實例化已設定接受html id=pageImage的檔案
         if (err) {
-            return res.render('admin/index', {message: err});
+            return res.render('admin/index', {
+                message: err
+            });
         } // passing else : now file is uploaded
         // console.log(req); // req detial
         var id = req.body.goods._id;
         let query = { // point the item by _id
             _id: id
-        }
+        };
         if (id) { // id exists (old model)
             f.Product(req.files, req.body);
             goodModel.findOne(query, function (err, result) {
@@ -337,16 +347,17 @@ router.post('/goods/new', function (req, res, next) {
                     return res.json(err);
                 }
                 _goods = _underscore.extend(result, goodsObj); // 替換字段
-                // _goods.save(function (err, result) {
-                //     if (err) {
-                //         console.log(">>>>>> model.save Error: Failed to update record" + err);
-                //     }
-                //     return res.redirect('/admin/goods/' + result._id);
-                // });
+                _goods.save(function (err, result) {
+                    if (err) {
+                        console.log(">>>>>> model.save Error: Failed to update record" + err);
+                        return res.json(err);
+                    }
+                    return res.redirect('/admin/goods/' + result._id);
+                });
             });
         } else { // id not defined (new model)
             goodsObj = f.Product(req.files, req.body);
-            _goods = new goodModel(goodsObj); // _goods是一個array
+            _goods = new goodModel(goodsObj); // _goods是一個array[]
             console.log(">>>> passing the _goods obj" + _goods);
             _goods.save(function (err, result) {
                 if (err) {
@@ -361,7 +372,16 @@ router.post('/goods/new', function (req, res, next) {
         }
     });
 });
-
+// /* POST login page. */
+// router.get('/goodsImg/:id', function (req, res) {
+//     var id = f.decrypt(req.params.id);
+    
+// });
+// /* POST login page. */
+// router.post('/goodsImg/:id', function (req, res) {
+//     var id = f.decrypt(req.params.id);
+    
+// });
 router.get('/goods/list/', function (req, res, next) {
     goodModel.fetch(function (err, result) {
         if (err) {
@@ -379,7 +399,7 @@ router.get('/goods/list/', function (req, res, next) {
 });
 
 // list delete user data (play with html JS) see datasets/userlist.html
-// 異步請求 (need jquery and ajax) 異步請求的方式比較安全&數據完整
+//  (need jquery and ajax)
 router.delete('/goods/delete/:id', function (req, res) {
     id = f.decrypt(req.params.id);
     let query = {

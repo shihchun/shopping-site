@@ -36,7 +36,6 @@
 <!-- optionally if you need translation for your language then include the locale file as mentioned below (replace LANG.js with your language locale) -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.5.2/js/locales/LANG.js"></script> -->
 
-
 <!-- form start POST & enctype="multipart/form-data" for file upload-->
 <form role="form-horizontal" action="/admin/goods/new" method="post" enctype="multipart/form-data">
     <!-- //- 隐藏表单域，用来更新数据，存储ID -->
@@ -81,12 +80,23 @@
             </tbody>
         </table>
     </div>
+    {% if message != 'modify goods info' %}
     <!-- IMAGE UPLORD #input-pageImage -->
-
     <div class="file-loading>
         <label for=" exampleFormControlUpload">上傳商品示意圖</label>
         <input id="pageImage" name="product" type="file" multiple accept="image">
     </div>
+    <script>
+            // {{product.img}}
+            $("#pageImage").fileinput({
+                theme: "explorer",
+                uploadUrl: "/admin/goods",
+                allowedFileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+            });
+    </script>
+    {% endif %}
     <div class="form-label-group">
         <button type="submit" class="btn btn-primary">
             {{ submit }}
@@ -145,30 +155,14 @@
     // replace ('\n', '<br/>', 'g')  replace ('\s', '&nbsp;', 'g') }}"
 </script>
 
-<script>
-    // {{product.img}}
-    $("#pageImage").fileinput({
-        theme: "explorer",
-        uploadUrl: "/admin/goods",
-        allowedFileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-        overwriteInitial: false,
-        initialPreviewAsData: true,
-    });
-</script>
+
+
+{% if message == 'modify goods info' %}
+<td><a target="_blank" href="/admin/goodsImg/{{ product.fakeID | safe }}"><button class="btn btn-success"
+    type="button">修改圖片</button></a></td>
+{% endif %}
 <script>
     var simplemde = new SimpleMDE({
         element: $("#exampleFormControlTextarea1")[0]
     });
 </script>
-
-<style>
-    .card-columns {
-        @include media-breakpoint-only(lg) {
-            column-count: 4;
-        }
-
-        @include media-breakpoint-only(xl) {
-            column-count: 5;
-        }
-    }
-</style>
