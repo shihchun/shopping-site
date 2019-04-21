@@ -35,7 +35,7 @@
             if (check == true) {
                 $.ajax({
                     type: 'DELETE',
-                    url: '/users/acount/delete/' + id,
+                    url: '/users/account/delete/' + id,
                     success: function (response) {
                         alert('使用者已刪除');
                         var tr = $('.item-id-' + id);

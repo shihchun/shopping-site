@@ -209,7 +209,7 @@ router.get('/logout', function (req, res) {
 // app.use(function(err, req, res, next){}
 // 後面行數，在每一個請求被處理之前都會執行的 middleware
 // router.use(function (req, res, next) {
-//     if(req.session.user){
+//     if(req.session.user || req.session.admin){
 //         next();
 //     }else{
 //         return res.redirect('/users/login');
@@ -270,25 +270,10 @@ router.get('/account/update/:id', function (req, res) {
     }
 });
 
-router.get('/account/list', function (req, res, next) {
-    customerModel.fetch(function (err, result) {
-        if (err) {
-            console.log(err);
-            return res.json(err);
-        }
-        arr = f.fakeIdArray(result);
-        console.log("arr>>>\n" + arr);
-        res.render('users/index', {
-            title: '使用者',
-            message: '',
-            userlist: arr,
-        });
-    });
-});
-
 // list delete user data (play with html JS) see datasets/userlist.html
 // ajax 異步請求 DELETE (need jquery and ajax)
 router.delete('/account/delete/:id', function (req, res) {
+    console.log("DELETE>>>>>>"+req.params.id);
     var id = f.decrypt(req.params.id);
     let query = {
         _id: id
@@ -301,4 +286,5 @@ router.delete('/account/delete/:id', function (req, res) {
         res.send('Success');
     });
 });
+
 module.exports = router;
