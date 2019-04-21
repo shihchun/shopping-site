@@ -335,24 +335,28 @@ router.post('/goods/new', function (req, res, next) {
             });
         } // passing else : now file is uploaded
         // console.log(req); // req detial
-        var id = req.body.goods._id;
+        id = f.decrypt(req.body.goods._id);
         let query = { // point the item by _id
             _id: id
         };
         if (id) { // id exists (old model)
-            f.Product(req.files, req.body);
+            goodsObj = f.Product(req.files, req.body);
             goodModel.findOne(query, function (err, result) {
                 if (err) {
                     console.log(">>>>>>1>>>>>>" + err);
                     return res.json(err);
                 }
+                goodsObj.img_count = result.img_count;
+                goodsObj.img = result.img;
+                goodsObj.base64 = result.base64;
                 _goods = _underscore.extend(result, goodsObj); // 替換字段
                 _goods.save(function (err, result) {
                     if (err) {
                         console.log(">>>>>> model.save Error: Failed to update record" + err);
                         return res.json(err);
                     }
-                    return res.redirect('/admin/goods/' + result._id);
+                    fakeID = f.encrypt(result.id);
+                    return res.redirect('/admin/goods/' + fakeID);
                 });
             });
         } else { // id not defined (new model)

@@ -65,43 +65,71 @@
                     <td><input type="number" name="goods[price]" class="form-control" value="{{  product.price }}" />
                     </td>
                     <td>
-                        <select class="form-control" required="">
-                            <option>電子</option>
-                            <option>Yearly</option>
+                        <select name="goods[category]" id ="cat" class="form-control" required="">
+                            <option value="電子">電子</option>
+                            <option value="百貨">百貨</option>
                         </select>
                     </td>
                     <td>
-                        <select name="goods[draft]" class="form-control">
-                            <option>草稿</option>
-                            <option>上架</option>
+                        <select name="goods[draft]" id = "draft" class="form-control">
+                            <option value="草稿">草稿</option>
+                            <option value="上架">上架</option>
                         </select>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
-    {% if message != 'modify goods info' %}
     <!-- IMAGE UPLORD #input-pageImage -->
-    <div class="file-loading>
-        <label for=" exampleFormControlUpload">上傳商品示意圖</label>
-        <input id="pageImage" name="product" type="file" multiple accept="image">
-    </div>
+    <span class="hiddenFileInput">
+        <div class="file-loading>
+            <label for=" exampleFormControlUpload">上傳商品示意圖</label>
+            <input id="pageImage" name="product" type="file" multiple accept="image">
+        </div>
+    </span>
     <script>
-            // {{product.img}}
-            $("#pageImage").fileinput({
-                theme: "explorer",
-                uploadUrl: "/admin/goods",
-                allowedFileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-                overwriteInitial: false,
-                initialPreviewAsData: true,
-            });
+        // {{product.img}}
+        $("#pageImage").fileinput({
+            theme: "explorer",
+            uploadUrl: "/admin/goods",
+            allowedFileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+            overwriteInitial: false,
+            initialPreviewAsData: true,
+        });
     </script>
-    {% endif %}
     <div class="form-label-group">
         <button type="submit" class="btn btn-primary">
             {{ submit }}
         </button>
+        {% if message == 'modify goods info' %}
+        <td><a target="_blank" href="/admin/goods/{{ product.fakeID | safe }}"><button class="btn btn-success"
+                    type="button">瀏覽</button></a></td>
+        <td><a target="_blank" href="/admin/goodsImg/{{ product.fakeID | safe }}"><button class="btn btn-warning"
+                    type="button">修改圖片</button></a></td>
+        <style>
+            .hiddenFileInput>input {
+                height: 100%;
+                width: 100;
+                opacity: 0;
+                cursor: pointer;
+            }
+
+            .hiddenFileInput {
+                border: 1px solid #ccc;
+                width: 30px;
+                height: 30px;
+                display: inline-block;
+                overflow: hidden;
+                visibility: hidden;
+            }
+        </style>
+        <script>
+            document.getElementById("cat").value = "{{  product.category }}";
+            document.getElementById("draft").value = "{{  product.draft }}";
+        </script>
+        {% endif %}
     </div>
+
 </form>
 
 <h1>上傳資料格式範例</h1>
@@ -156,11 +184,6 @@
 </script>
 
 
-
-{% if message == 'modify goods info' %}
-<td><a target="_blank" href="/admin/goodsImg/{{ product.fakeID | safe }}"><button class="btn btn-success"
-    type="button">修改圖片</button></a></td>
-{% endif %}
 <script>
     var simplemde = new SimpleMDE({
         element: $("#exampleFormControlTextarea1")[0]

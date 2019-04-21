@@ -183,10 +183,12 @@ exports.Product = function(files, pageBodys) { // when post new product
         name: pageBodys.goods.name,
         quentity: pageBodys.goods.quentity,
         des: pageBodys.goods.des,
+        category: pageBodys.goods.category,
         price: pageBodys.goods.price,
         draft: pageBodys.goods.draft,
         img_count: files.length,
         img: imgSlice, // path saved
+        
         base64: data, // Array Buffer
     };
     return goodsObj;

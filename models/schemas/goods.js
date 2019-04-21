@@ -5,6 +5,7 @@ var goodSchema = new mongoose.Schema({
     quentity: Number,
     price: Number,
     des: String,
+    category: String,
     draft: String,
     img_count: Number,
     img: Array,
