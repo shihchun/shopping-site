@@ -11,22 +11,6 @@ const verify = require('../models/verify.js');
 
 const upload = uploadModel.any('pageImage'); // 實例化上傳檔案的 multer
 
-router.get('/cust', function (req, res, next) {
-    customerModel.fetch(function (err, result) {
-        if (err) {
-            console.log(err);
-            return res.json(err);
-        }
-        arr = f.fakeIdArray(result);
-        console.log("arr>>>\n" + arr);
-        res.render('users/index', {
-            title: '使用者',
-            message: '',
-            userlist: arr,
-        });
-    });
-});
-
 // 產生驗證碼 在html加上 '/verify/?'，來使用
 router.get('/verify', verify.makeCapcha);
 
@@ -215,13 +199,13 @@ router.post('/login', function (req, res) {
 router.get('/logout', function (req, res) {
     // Error: req.flash() requires sessions
     // req.session.destroy(); // 刪除所有會話Express.session這個方法包括cookie
-    if (req.session.user) {
-        account = f.decrypt(req.session.user.account);
-        req.session.user = null; //只有刪除一個會話
-        req.flash('pannel', "mesage: " + account + " 您已經登出"); //這會使用到cookie
+    if (req.session.admin) {
+        account = f.decrypt(req.session.admin.account);
+        req.session.admin = null; //只有刪除一個會話
+        req.flash('pannel', "管理員 " + account + " 您已經登出"); //這會使用到cookie
         return res.redirect('/admin/login');
     }
-    req.session.user = null; //只有刪除一個會話
+    req.session.admin = null; //只有刪除一個會話
     req.flash('pannel', "mesage: '沒有登入'"); //這會使用到cookie
     return res.redirect('/admin/login');
     // return res.json({mesage:'已經登出'});
@@ -231,14 +215,30 @@ router.get('/logout', function (req, res) {
 // session 緩存機制一般在 記憶體内存、cookie、redis、memcached、database
 // app.use(function(err, req, res, next){}
 // 後面行數，在每一個請求被處理之前都會執行的 middleware
-// router.use(function (req, res, next) {
-//     if(req.session.admin){
-//         next();
-//     }else{
-//         return res.redirect('/admin/login');
-//     }
-// });
+router.use(function (req, res, next) {
+    if(req.session.admin){
+        next();
+    }else{
+        return res.redirect('/admin/login');
+    }
+});
 //後面行數，需要登入才能使用
+
+router.get('/cust', function (req, res, next) {
+    customerModel.fetch(function (err, result) {
+        if (err) {
+            console.log(err);
+            return res.json(err);
+        }
+        arr = f.fakeIdArray(result);
+        console.log("arr>>>\n" + arr);
+        res.render('users/index', {
+            title: '使用者',
+            message: '',
+            userlist: arr,
+        });
+    });
+});
 
 // Controller of the views and model
 // 使用者的部分

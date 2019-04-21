@@ -159,9 +159,7 @@ router.post('/login', function (req, res) {
         // 如果直接不是用return的話會報錯 Cannot set headers after they are sent to the client
         return res.redirect('/users/login');
     }
-    customerModel.find({
-        account: account
-    }, function (err, userObj) {
+    customerModel.find({account: account}, function (err, userObj) {
         if (err) return err;
         // findOne 如果沒有資料的話直接錯誤，所以不用這個，除非直接傳送新的http response不然會有問題
         // find 返回一個 [{objects, objects...}]的 json array，因為註冊機制的關係不會重複
@@ -179,8 +177,7 @@ router.post('/login', function (req, res) {
                     account: account,
                     passphrase: passphrase
                 };
-                console.log(req.session);
-                return res.redirect('/admin');
+                res.json("You're login with session "+ JSON.stringify(req.session.user));
             } else {
                 req.flash('pannel', '密碼錯誤');
                 return res.redirect('/users/login');
@@ -198,7 +195,14 @@ router.get('/logout', function (req, res) {
         req.flash('pannel', "mesage: " + account + " 您已經登出"); //這會使用到cookie
         return res.redirect('/users/login');
     }
-    req.session.user = null; //只有刪除一個會話
+    if (req.session.admin) {
+        account = f.decrypt(req.session.admin.account);
+        req.session.admin = null; //只有刪除一個會話
+        req.flash('pannel', "管理員 " + account + " 您已經登出"); //這會使用到cookie
+        return res.redirect('/admin/login');
+    }
+    req.session.user = null;
+    req.session.admin = null;
     req.flash('pannel', "mesage: '沒有登入'"); //這會使用到cookie
     return res.redirect('/users/login');
     // return res.json({mesage:'已經登出'});
@@ -208,13 +212,13 @@ router.get('/logout', function (req, res) {
 // session 緩存機制一般在 記憶體内存、cookie、redis、memcached、database
 // app.use(function(err, req, res, next){}
 // 後面行數，在每一個請求被處理之前都會執行的 middleware
-// router.use(function (req, res, next) {
-//     if(req.session.user || req.session.admin){
-//         next();
-//     }else{
-//         return res.redirect('/users/login');
-//     }
-// });
+router.use(function (req, res, next) {
+    if(req.session.user || req.session.admin){
+        next();
+    }else{
+        return res.redirect('/users/login');
+    }
+});
 //後面行數，需要登入才能使用
 
 // Controller of the views and model

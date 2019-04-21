@@ -1,26 +1,28 @@
 <!-- 382*180 -->
 <div class="card-columns">
-{% for item in productCard %}
-    <div class="card">
-        <img class="card-img-top" src="{{item.img[0]}}" alt="Card image cap">
-        <div class="card-body">
-            <h5 class="card-title">{{item.name}}</h5>
-            <p class="card-text">{{item.desp}}</p>
-            <a href="/goods/{{item._id | safe}}" class="btn btn-primary">查看</a>
-        </div>
-        <div class="card-footer">
-            <small class="text-muted">{{ item.meta.updateAt | date('Y-m-d')}}</small>
-        </div>
+  {% for item in productCard %}
+  <div class="card">
+    <img class="card-img-top" src="{{item.img[0]}}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">{{item.name}}</h5>
+      <p class="card-text">{{item.desp}}</p>
+      <a href="/goods/{{item._id | safe}}" class="btn btn-primary">查看</a>
     </div>
-{% endfor %}
+    <div class="card-footer">
+      <small class="text-muted">{{ item.meta.updateAt | date('Y-m-d')}}</small>
+      <small class="text-muted">{{ item.category }}</small>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 <style>
-.card-columns {
-  @include media-breakpoint-only(lg) {
-    column-count: 4;
+  .card-columns {
+    @include media-breakpoint-only(lg) {
+      column-count: 4;
+    }
+
+    @include media-breakpoint-only(xl) {
+      column-count: 5;
+    }
   }
-  @include media-breakpoint-only(xl) {
-    column-count: 5;
-  }
-}
 </style>

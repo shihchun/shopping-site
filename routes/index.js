@@ -4,6 +4,15 @@ const goodModel = require('../models/goods.js'); // 载入mongoose编译后的�
 const f = require('../models/functions.js');
 // var base64Img = require('base64-img');
 
+// 聊天
+router.get('/chat', function(req, res, next) {
+  var host = [];
+  host.socket = 'http://' + req.hostname+':'+req.app.get('port');
+  host.websocket = 'ws://' +req.hostname+':'+req.app.get('port');
+  console.log(host);
+  res.render('chat2',{host: host});
+});
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
   let query = {draft: '上架'};
@@ -20,21 +29,6 @@ router.get('/', function (req, res, next) {
   });
 });
 
-/* GET home page. */
-router.get('/admin/ll', function (req, res, next) {
-  let query = {draft: '上架'};
-  
-  // base64Img.base64('../models/1.jpg', function(err, data) {console.log(data);})
-  // var data = base64Img.base64Sync('models/1.jpg');
-  // console.log(data);
-  goodModel.find( query, function (err, result) {
-      res.render('index', {
-          title: '首頁',
-          message: '',
-          productCard: result,
-      });
-  });
-});
 
 // goods data detail page after upload
 router.get('/goods/:id', function (req, res) {

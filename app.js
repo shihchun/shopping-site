@@ -50,14 +50,14 @@ app.use(session({
   resave: false, // 是否保存session會話
   saveUninitialized: false, // 是否保存未初始化的session
   cookie: {
-    maxAge: 60000,
+    maxAge: 3600000, // 單位毫秒
     /*secure: true,用了會沒cookie*/
   }
 }));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/admin', adminRouter); // use adminRouter '/' as '/admin' //
+app.use('/admin', adminRouter); // use adminRouter '/' as '/admin'
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -74,5 +74,20 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+var Server = require('socket.io');
+var io = new Server();
+
+io.serveClient(false);
+exports.io = io;
+
+
+io.on('connection', function(socket){
+    socket.on('chat message', function(msg){
+        console.log(msg)
+        io.emit('chat message', msg);
+    });
+});
+
 
 module.exports = app;
