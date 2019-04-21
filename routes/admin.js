@@ -11,18 +11,8 @@ const fs = require('fs');
 
 const upload = uploadModel.any('pageImage'); // 實例化上傳檔案的 multer
 
-/**
- * make salt hash 用密碼加鹽得到雜湊值
- * @param {String} pwd
- * @param {String} salt 
- * @returns hash value
- */
-function encodePassword(pwd, salt) {
-    return f.md5(pwd + salt);
-}
-
 // 產生驗證碼 在html加上 '/verify/?'，來使用
-router.get('/verify', verify.makeCapcha); 
+router.get('/verify', verify.makeCapcha);
 
 /* GET regesit page. */
 router.get('/regesit', function (req, res) {
@@ -187,8 +177,8 @@ router.post('/login', function (req, res) {
                 // 建立會話 session 以雜湊密碼後的密碼+之前亂數salt，再行雜湊
                 // req.session.user = f.encodePassword(userObj[0].password, userObj[0].salt);
                 // req.session.get = f.encrypt(userObj[0].account);
-                passphrase = f.encodePassword(userObj[0].password, userObj[0].salt);
                 account = f.encrypt(userObj[0].account);
+                passphrase = f.encodePassword(userObj[0].password, userObj[0].salt);
                 req.session.user = {account: account, passphrase: passphrase};
                 console.log(req.session);
                 return res.redirect('/admin');
@@ -219,14 +209,14 @@ router.get('/logout', function (req, res) {
 // session 緩存機制一般在 記憶體内存、cookie、redis、memcached、database
 // app.use(function(err, req, res, next){}
 // 後面行數，在每一個請求被處理之前都會執行的 middleware
-router.use(function (req, res, next) {
-    if(req.session.user){
-        next();
-    }else{
-        return res.redirect('/admin/login');
-    }
-});
-//後面行數需要登入才能使用
+// router.use(function (req, res, next) {
+//     if(req.session.user){
+//         next();
+//     }else{
+//         return res.redirect('/admin/login');
+//     }
+// });
+//後面行數，需要登入才能使用
 
 // Controller of the views and model
 // 使用者的部分
@@ -240,7 +230,7 @@ router.get('/', function (req, res, next) {
         console.log("arr>>>\n" + arr);
         res.render('admin/index', {
             title: '管理員',
-            message: '',
+            message: 'asdf',
             userlist: arr,
         });
     });
@@ -321,7 +311,7 @@ router.get('/goods', function (req, res, next) {
             return res.json(err);
         }
         res.render('admin/goodsAdd', {
-            title: '管理員',
+            title: '商品上傳',
             message: '',
             submit: '提交',
             userlist: result,
@@ -329,7 +319,7 @@ router.get('/goods', function (req, res, next) {
     });
 });
 
-router.post('/goods', function (req, res, next) {
+router.post('/goods/new', function (req, res, next) {
     upload(req, res, (err) => { // 實例化已設定接受html id=pageImage的檔案
         if (err) {
             return res.render('admin/index', {message: err});
@@ -355,11 +345,8 @@ router.post('/goods', function (req, res, next) {
                 // });
             });
         } else { // id not defined (new model)
-            f.Product(req.files, req.body);
+            goodsObj = f.Product(req.files, req.body);
             _goods = new goodModel(goodsObj); // _goods是一個array
-            var data = fs.readFileSync('models/1.jpg');
-            _goods.base64.data = data;
-            _goods.base64.contentType = 'image/png';
             console.log(">>>> passing the _goods obj" + _goods);
             _goods.save(function (err, result) {
                 if (err) {
@@ -428,9 +415,10 @@ router.get('/goods/update/:id', function (req, res) {
 router.get('/goods/:id', function (req, res) {
     var id = f.decrypt(req.params.id);
     goodModel.findById(id, function (err, result) {
-        esult.fakeID = f.encrypt(result.id);
+        result.fakeID = f.encrypt(result.id);
         result._id = null;
         res.render('admin/index', {
+            title: "商品細節",
             productDetial: result
         });
     });

@@ -41,6 +41,7 @@ router.get('/goods/:id', function (req, res) {
   var id = req.params.id;
   goodModel.findById(id, function (err, result) {
       res.render('admin/index', {
+          title: "商品明細",
           productDetial: result
       });
   });

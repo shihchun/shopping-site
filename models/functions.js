@@ -162,14 +162,23 @@ exports.User = function(pageBodys) { // when post new product
  * @returns {string} goodsObj is json format
  */
 exports.Product = function(files, pageBodys) { // when post new product
-    var img = []; // 不用 = new Array(); 效率問題
+    var img = [];
+    var imgSlice = [];
     for (let i = 0; i < files.length; ++i) { // 檔案上傳個數
         console.log("上傳的第" + (i + 1) + "個路徑到: " + files[i].path.slice(6));
-        // img[i] = files[i].path.slice(6);
+        imgSlice[i] = files[i].path.slice(6);
         img[i] = files[i].path;
     }
-    // var data = base64Img.base64Sync(files[0].path);
-    
+    var data = [];
+    for (let i = 0; i < files.length; ++i){
+        // data[i] = fs.readFileSync(img[i]);
+        data[i] = base64Img.base64Sync(img[i]);
+    }
+    // console.log("data read >>>>>>\n" + data);
+    if(pageBodys._id){goodsObj._id = pageBodys._id;}
+    console.log("files count: " + files.length);
+    console.log(">>>>>>>>> new product" + JSON.stringify(goodsObj, null, 4));
+    var goodsObj = [];
     goodsObj = {
         name: pageBodys.goods.name,
         quentity: pageBodys.goods.quentity,
@@ -177,17 +186,11 @@ exports.Product = function(files, pageBodys) { // when post new product
         price: pageBodys.goods.price,
         draft: pageBodys.goods.draft,
         img_count: files.length,
-        img: img,
+        img: imgSlice, // path saved
+        base64: data, // Array Buffer
     };
-    // var data = fs.readFileSync('models/1.jpg');
-    // console.log("data read >>>>>>");
-    // console.log(data);
-    // goodsObj.base64.data = data;
-    // goodsObj.base64.type = 'image/png';
-    if(pageBodys._id){goodsObj._id = pageBodys._id;}
-    console.log("files count: " + files.length);
-    console.log(">>>>>>>>> new product" + JSON.stringify(goodsObj, null, 4));
     return goodsObj;
+
 }
 
 /**
@@ -201,7 +204,7 @@ exports.makeSecret = function() {
         secret += possible.charAt(Math.floor(Math.random() * possible.length));
     console.log("\n>>>>>>> New session with: \nsecret (128 strings): \n" + secret); // generate secret 128 strings
     var uuid = makeUuid();
-    console.log("cookid id uuid (8-4-4-4-12): \n" + uuid );
+    console.log("\ncookid id uuid (8-4-4-4-12): \n" + uuid +"\n");
     return {secret, uuid};
 }
 

@@ -28,7 +28,6 @@ app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'));
 app.set('trust proxy', 1) // trust first proxy
 
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(logger('dev')); // pruduction mode have better performance

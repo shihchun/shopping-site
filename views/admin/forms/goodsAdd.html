@@ -38,7 +38,7 @@
 
 
 <!-- form start POST & enctype="multipart/form-data" for file upload-->
-<form role="form-horizontal" action="/admin/goods" method="post" enctype="multipart/form-data">
+<form role="form-horizontal" action="/admin/goods/new" method="post" enctype="multipart/form-data">
     <!-- //- 隐藏表单域，用来更新数据，存储ID -->
     <input type="hidden" name="goods[_id]" value="{{ product.fakeID | safe }}">
     <div class="form-label-group">
