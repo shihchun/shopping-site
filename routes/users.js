@@ -48,8 +48,8 @@ router.post('/account/new', function (req, res) {
             es = 1;
         }
         if (es) {
-            fakeID = f.encrypt(req.body.user._id);
-            return res.redirect('/users/account/update/' + fakeID);
+            id = req.body.user._id;
+            return res.redirect('/users/account/update/' + id);
         }
         customerModel.findById(id, function (err, result) {
             if (err) {
@@ -73,7 +73,7 @@ router.post('/account/new', function (req, res) {
                     return res.json(err);
                 }
                 console.log(result);
-                fakeID = f.encrypt(id);
+                fakeID = f.encrypt(result.id);
                 return res.redirect('/users/account/' + fakeID);
             });
         });
@@ -131,7 +131,8 @@ router.post('/account/new', function (req, res) {
             } else {
                 console.log('>>>>>> ' + JSON.stringify(result, null, 4));
                 fakeID = f.encrypt(result.id);
-                res.redirect('/users/account/' + fakeID);
+                req.flash('pannel', '使用者創建成功');
+                return res.redirect('/users/account/' + fakeID);
             }
         });
     }

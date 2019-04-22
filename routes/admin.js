@@ -54,8 +54,8 @@ router.post('/users/new', function (req, res) {
             es = 1;
         }
         if (es) {
-            fakeID = f.encrypt(req.body.user._id);
-            return res.redirect('/admin/users/update/' + fakeID);
+            id = req.body.user._id;
+            return res.redirect('/admin/users/update/' + id);
         }
         query = id;
         userModel.findById(query, function (err, result) {
@@ -81,6 +81,7 @@ router.post('/users/new', function (req, res) {
                 }
                 console.log(result);
                 fakeID = f.encrypt(id);
+                req.flash('pannel', '使用者創建成功');
                 return res.redirect('/admin/users/' + fakeID);
             });
         });

@@ -4,27 +4,30 @@ const goodModel = require('../models/goods.js'); // 载入mongoose编译后的�
 const f = require('../models/functions.js');
 // var base64Img = require('base64-img');
 
-// 聊天 websocket 和 socket 協定不一樣
-router.get('/chat', function(req, res, next) {
+router.get('/chat', function (req, res, next) {
   var host = [];
-  host.socket = 'http://' + req.hostname+':'+req.app.get('port');
-  host.websocket = 'ws://' +req.hostname+':'+req.app.get('port');
+  host.socket = 'http://' + req.hostname + ':' + req.app.get('port');
+  host.websocket = 'ws://' + req.hostname + ':' + req.app.get('port');
   console.log(host);
-  res.render('chat2',{host: host});
+  res.render('chat2', {
+    host: host
+  });
 });
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  let query = {draft: '上架'};
+  let query = {
+    draft: '上架'
+  };
   // base64Img.base64('../models/1.jpg', function(err, data) {console.log(data);})
   // var data = base64Img.base64Sync('models/1.jpg');
   // console.log(data);
-  goodModel.find( query, function (err, result) {
+  goodModel.find(query, function (err, result) {
     arr = f.fakeIdArray(result);
     res.render('index', {
-        title: '首頁',
-        message: '',
-        productCard: arr,
+      title: '首頁',
+      message: '',
+      productCard: arr,
     });
   });
 });
@@ -36,10 +39,31 @@ router.get('/goods/:id', function (req, res) {
   goodModel.findById(id, function (err, result) {
     result.id = null;
     res.render('admin/index', {
-        title: "商品明細",
-        productDetial: result
+      title: "商品明細",
+      productDetial: result
     });
   });
+});
+
+router.get('/test', function (req, res, next) {
+  // curl http://localhost:4000/test  --request GET
+  user = {
+    "username": "abc",
+    "password": "abc"
+  };
+  res.json(user);
+  res.end();
+});
+
+router.post('/test', function (req, res, next) {
+  // curl --header "Content-Type: application/json" \
+  //   --request POST \
+  //   --data '{"username":"abc","password":"abc"}' \
+  //   http://localhost:4000/test 
+  // curl http://localhost:4000/test --header "Content-Type: application/json" --request POST --data '{"username":"abc","password":"abc"}'
+  console.log(req.headers);
+  console.log(req.body);
+  res.end();
 });
 
 module.exports = router;
