@@ -14,6 +14,8 @@ router.get('/chat', function (req, res, next) {
   });
 });
 
+
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
   let query = {
@@ -24,21 +26,38 @@ router.get('/', function (req, res, next) {
   // console.log(data);
   goodModel.find(query, function (err, result) {
     arr = f.fakeIdArray(result);
-    res.render('index', {
+    return res.render('index', {
       title: '首頁',
-      message: '',
+      message: req.flash('pannel'),
       productCard: arr,
     });
   });
 });
 
+/* GET cat search. */
+router.get('/category', function(req, res, next) {
+  console.log(req.query.q);
+  let query = {
+    draft: '上架',
+    category: req.query.q
+  };
+  goodModel.find(query, function (err, result) {
+    arr = f.fakeIdArray(result);
+    return res.render('index', {
+      title: '首頁',
+      message: '',
+      productCard: arr,
+    });
+  });
+  
+});
 
 // goods data detail page after upload
 router.get('/goods/:id', function (req, res) {
   var id = f.decrypt(req.params.id);
   goodModel.findById(id, function (err, result) {
     result.id = null;
-    res.render('admin/index', {
+    return res.render('admin/index', {
       title: "商品明細",
       productDetial: result
     });

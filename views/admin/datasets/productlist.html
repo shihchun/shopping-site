@@ -16,10 +16,8 @@
                 <td>{{ item.name }}</td>
                 <td>{{ item.quentity }}</td>
                 <td>{{ item.draft }}</td>
-                <td><a target="_blank" href="/admin/goods/{{ item.fakeID | safe }}"><button class="btn btn-success"
-                            type="button">查看</button></a></td>
-                <td><a target="_blank" href="/admin/goods/update/{{ item.fakeID | safe }}"> <button class="btn btn-warning"
-                            type="button">修改</button></a></td>
+                <td><a class="btn btn-outline-success" href="/admin/goods/{{ item.fakeID | safe }}"><i class="fa fa-fw fa-play"></i></a>
+                <td><a class="btn btn-outline-warning" href="/admin/goods/update/{{ item.fakeID | safe }}"><i class="fa fa-fw fa-edit"></i></a></td>
                 <td><button class="btn btn-danger del" type="button" data-id="{{ item.fakeID | safe }}">刪除</button></td>
             </tr>
             {% endfor %}

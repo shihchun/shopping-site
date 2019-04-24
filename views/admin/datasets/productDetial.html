@@ -1,59 +1,46 @@
-<!-- <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-    <ol class="carousel-indicators">
-        {% set productCount = productDetial.img_count %}
-        {% set productCountAsArray = Array(productCount) %}
-        {% for x, y in productCountAsArray %}
-        <li data-target="#carouselExampleIndicators" data-slide-to="{{ x }}"></li>
-        {% endfor %}
-    </ol>
-    <div class="carousel-inner">
-        {% for item in productDetial.img %}
-        <div class="carousel-item {% if loop.first %}active{% endif %}">
-            <img class="d-block w-100" src="{{ item }}"  alt="First slide">
+
+
+<div class="container dark-grey-text mt-5">
+    <!--Grid row-->
+    <div class="row wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-md-6 mb-4">
+            {% include "./carousel_goods.html" %}
         </div>
-        {% endfor %}
-    </div>
-    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-</div> -->
-<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-    <ol class="carousel-indicators">
-        {% set productCount = productDetial.img_count %}
-        {% set productCountAsArray = Array(productCount) %}
-        {% for x, y in productCountAsArray %}
-        <li data-target="#carouselExampleIndicators" data-slide-to="{{ x }}"></li>
-        {% endfor %}
-    </ol>
-    <div class="carousel-inner">
-        {% for item in productDetial.base64 %}
-        <div class="carousel-item {% if loop.first %}active{% endif %}">
-            <img class="d-block w-100" src="{{ item }}"  alt="First slide">
+        <!--Grid column-->
+        <!--Grid column-->
+        <div class="col-md-6 mb-4">
+            <!--Content-->
+            <div class="p-4">
+                <div class="mb-3">
+                    <a href="/category/?q={{productDetial.category}}">
+                        <span class="badge purple mr-1">{{productDetial.category}}</span>
+                    </a>
+                </div>
+                <p class="lead">
+                    <!-- <span class="mr-1">
+                            <del>$200</del>
+                        </span> -->
+                    <span>價格 NT$ {{productDetial.price}}</span>
+                    <br>
+                    <span>剩餘數量：{{productDetial.quentity}} 個</span>
+                </p>
+                <p class="lead font-weight-bold">簡介</p>
+                <p>{{productDetial.des}}</p>
+                <form class="d-flex justify-content-left">
+                    <!-- Default input -->
+                    <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
+                    <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
+                    </button>
+                </form>
+            </div>
+            <!--Content-->
         </div>
-        {% endfor %}
+        <!--Grid column-->
     </div>
-    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
+    <!--Grid row-->
 </div>
-
-
-<style>
-.carousel-inner > .carousel-item > img {
-  /* min-width: 100%; */
-  width: 30%;
-}
- </style>
 <dl class="dl-horizontal" style="font-size:20px">
     <dt>商品名稱</dt>
     <dd>{{productDetial.name}}</dd>
@@ -69,5 +56,40 @@
     {%- endfor %}
 
     <dt>Description 2</dt>
-    <dd>Item 2</dd>
+    <dd>{{productDetial.des}}</dd>
 </dl>
+<style>
+    @media (max-width: 940px) {
+        .container {
+            flex-direction: column;
+            margin-top: 60px;
+        }
+
+        .carousel-inner>.carousel-item {
+            width: 100%;
+        }
+
+        .carousel-inner>.carousel-item>img {
+            width: 300px;
+            right: 10px;
+            top: -65px;
+            left: initial;
+        }
+    }
+
+    @media (max-width: 535px) {
+        .carousel-inner>.carousel-item>img {
+            width: 220px;
+            top: -85px;
+        }
+    }
+</style>
+<script>
+    new WOW().init();
+</script>
+<style>
+    /* Footer color for sake of consistency with Navbar */
+    .page-footer {
+        background-color: #929FBA;
+    }
+</style>

@@ -1,6 +1,8 @@
 <!-- <!doctype html> -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="zh-Hant-TW" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     {% block head %}
     <meta charset="utf-8">
@@ -21,6 +23,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- font-awesome CDN -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     {% endblock %}
 </head>
 <header>
@@ -36,11 +41,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="/chat">CHAT</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -48,9 +50,9 @@
                         管理員
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/admin/user/list/">使用者名單</a>
                         <a class="dropdown-item" href="/admin/goods/list/">商品列表</a>
                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/users/account/list/">使用者名單</a>
                         <a class="dropdown-item" href="/admin/user/list/">管理員名單</a>
                     </div>
                 </li>
@@ -63,13 +65,10 @@
                     <a class="nav-link" href="/cart">購物車</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/message">訊息</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="/users/settings">設定</a>
                 </li>
                 <li class="nav-item active">
-                        <a class="nav-link" href="/users/login">登入</a>
+                    <a class="nav-link" href="/users/login">登入</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="/users/logout">登出</a>
@@ -83,6 +82,9 @@
 <body class="wrapperr">
     <!-- <script type="text/javascript" color="192,192,192" opacity='0.7' zIndex="-2" count="100" src="/js/canvas-nest/canvas-nest.js"></script> -->
     <section class="wrapper">
+        {% if message != '' %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endif %}
         {% block content %}{% endblock %}
     </section>
     {% block footer %}
@@ -99,42 +101,31 @@
                     <div class="col-md-3 col-sm-6">
                         <!-- Column1-->
                         <div class="footer-pad">
-                            <h4>Address</h4>
-                            <address>
-                                <ul class="list-unstyled">
-                                    <li>City Hall<br /> 212 Street<br /> Lawoma<br /> 735<br /></li>
-                                    <li>Phone: 0</li>
-                                </ul>
-                            </address>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <!-- Column1-->
-                        <div class="footer-pad">
-                            <h4>Popular Services</h4>
-                            <ul class="list-unstyled">
-                                <li><a href="#"></a></li>
-                                <li><a href="#">Payment Center</a></li>
-                                <li><a href="#">Contact Directory</a></li>
-                                <li><a href="#">Forms</a></li>
-                                <li><a href="#">News and Updates</a></li>
-                                <li><a href="#">FAQs</a></li>
+                            <h4>聯絡我們</h4>
+                            <a class="btn btn-light" href="#">
+                                <i class="fab fa-facebook-square fa-2x"></i>
+                            </a>
+                            <a class="btn btn-light" href="#">
+                                <i class="fab fa-instagram fa-2x"></i>
+                            </a>
+                            <a class="btn btn-light" href="#">
+                                <i class="fas fa-map-marked-alt fa-2x"></i>
+                            </a>
+                            <a class="btn btn-light" href="#">
+                                <i class="far fa-envelope fa-2x"></i>
+                            </a>
                             </ul>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <!-- Column1-->
                         <div class="footer-pad">
-                            <h4>資訊</h4>
+                            <h4>使用者</h4>
                             <ul class="list-unstyled">
-                                <li><a href="/admin/cust/">使用者名單</a></li>
-                                <li><a href="/admin/goods/list/">商品列表</a></li>
-                                <li><a href="/admin/user/list/">管理員名單</a></li>
-                                <li><a href="/admin/goods">新增新商品</a></li>
-                                <li><a href="/admin/message">管理員訊息</a></li>
-                                <li><a href="/admin">Index</a></li>
-                                <li><a href="#">FAQs</a></li>
-                                <li><a href="#">Webmaster</a></li>
+                                <li><a href="/users/login">登入</a></li>
+                                <li><a href="/users/logout">登出</a></li>
+                                <li><a href="/users/regesit">註冊</a></li>
+                                <li><a href="#">忘記密碼</a></li>
                             </ul>
                         </div>
                     </div>
@@ -147,11 +138,22 @@
                                 <li><a href="/admin/logout">登出</a></li>
                                 <li><a href="/admin/regesit">註冊</a></li>
                                 <li><a href="#">忘記密碼</a></li>
-                                <li><a href="#">Mayor and City Council</a></li>
-                                <li><a href="#"></a></li>
                             </ul>
                         </div>
                     </div>
+                    <div class="col-md-3 col-sm-6">
+                        <!-- Column1-->
+                        <div class="footer-pad">
+                            <h4>資訊</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="/admin/goods">新增新商品</a></li>
+                                <li><a href="/admin/goods/list/">商品列表</a></li>
+                                <li><a href="/admin/cust/">使用者名單</a></li>
+                                <li><a href="/admin/user/list/">管理員名單</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

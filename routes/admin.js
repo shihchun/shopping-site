@@ -17,7 +17,7 @@ router.get('/verify', verify.makeCapcha);
 /* GET regesit page. */
 router.get('/regesit', function (req, res) {
     console.log("body " + req.body);
-    res.render('admin/logins', {
+    return res.render('admin/logins', {
         title: '管理員註冊',
         message: req.flash('pannel'),
         cmstype: 'Admin Pannel',
@@ -149,7 +149,7 @@ router.get('/login', function (req, res, next) {
     adminPass = f.md5("a" + "a"); // Admin，加鹽密碼
     adminPass = f.encodePassword("a", "a")
     console.log(">>>>admin.account:a pass: a encrypt:" + adminPass);
-    res.render('admin/logins', {
+    return res.render('admin/logins', {
         title: '管理員登入',
         message: req.flash('pannel'),
         cmstype: 'Admin Pannel',
@@ -233,7 +233,7 @@ router.get('/cust', function (req, res, next) {
         }
         arr = f.fakeIdArray(result);
         console.log("arr>>>\n" + arr);
-        res.render('users/index', {
+        return res.render('users/index', {
             title: '使用者',
             message: '',
             userlist: arr,
@@ -251,7 +251,7 @@ router.get('/', function (req, res, next) {
         }
         arr = f.fakeIdArray(result);
         console.log("arr>>>\n" + arr);
-        res.render('admin/index', {
+        return res.render('admin/index', {
             title: '管理員',
             message: '',
             userlist: arr,
@@ -267,7 +267,7 @@ router.get('/users/:id', function (req, res) {
         result.fakeID = f.encrypt(result.id);
         result._id = null;
         console.log("\n>>>findById>>>\n" + result);
-        res.render('admin/index', {
+        return res.render('admin/index', {
             title: '您好，' + result.firstname,
             detial: result
         });
@@ -281,7 +281,7 @@ router.get('/users/update/:id', function (req, res) {
         userModel.findById(id, function (err, result) {
             result.fakeID = f.encrypt(result.id);
             result._id = null;
-            res.render('admin/logins', {
+            return res.render('admin/logins', {
                 title: '管理員註冊',
                 log: "登入",
                 herf_login: "/admin/login",
@@ -302,7 +302,7 @@ router.get('/user/list/', function (req, res, next) {
         }
         arr = f.fakeIdArray(result);
         console.log("arr>>>\n" + arr);
-        res.render('admin/index', {
+        return res.render('admin/index', {
             title: '管理員',
             message: '',
             userlist: arr,
@@ -333,7 +333,7 @@ router.get('/goods', function (req, res, next) {
             console.log(err);
             return res.json(err);
         }
-        res.render('admin/goodsAdd', {
+        return res.render('admin/goodsAdd', {
             title: '商品上傳',
             message: '',
             submit: '提交',
@@ -409,7 +409,7 @@ router.get('/goods/list/', function (req, res, next) {
         }
         arr = f.fakeIdArray(result);
         console.log("arr>>>\n" + arr);
-        res.render('admin/index', {
+        return res.render('admin/index', {
             title: '商品列表',
             message: '',
             productlist: arr,
@@ -440,7 +440,7 @@ router.get('/goods/update/:id', function (req, res) {
         goodModel.findById(id, function (err, result) {
             result.fakeID = f.encrypt(result.id);
             result._id = null;
-            res.render('admin/goodsAdd', {
+            return res.render('admin/goodsAdd', {
                 title: '商品更新',
                 message: 'modify goods info',
                 submit: '更新',
@@ -456,7 +456,7 @@ router.get('/goods/:id', function (req, res) {
     goodModel.findById(id, function (err, result) {
         result.fakeID = f.encrypt(result.id);
         result._id = null;
-        res.render('admin/index', {
+        return res.render('admin/index', {
             title: "商品細節",
             productDetial: result
         });

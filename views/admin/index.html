@@ -1,8 +1,5 @@
 {% extends '../layouts/general.html' %}
 {% block content %}
-{% if message != '' %}
-<div class="alert alert-danger" role="alert">{{ message }}</div>
-{% endif %}
 <!-- userpart -->
 {% if userlist != '' %}
 <h1 class="text-center">管理員名單</h1>
@@ -41,6 +38,7 @@
 {% endif %}
 {% if productDetial != '' %}
 <h1 class="text-center">商品詳細內容</h1>
+
 <!-- set the grid -->
 <div class="container-fluid">
     <div class="row">

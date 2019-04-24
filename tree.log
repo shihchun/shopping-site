@@ -1,0 +1,30 @@
+列出資料夾 PATH
+磁碟區序號為 BE09-CC23
+C:.
+├─bin
+├─demo
+├─models
+│  ├─pre
+│  └─schemas
+├─public
+│  ├─css
+│  ├─img
+│  ├─js
+│  │  └─canvas-nest
+│  ├─libs
+│  │  ├─bootstrap
+│  │  ├─bootstrap-datepicker
+│  │  │  └─less
+│  │  ├─bootstrap-fileinput
+│  │  └─jquery
+│  └─uploads
+├─routes
+└─views
+    ├─admin
+    │  ├─datasets
+    │  └─forms
+    ├─datasets
+    ├─layouts
+    └─users
+        ├─datasets
+        └─forms

@@ -11,8 +11,8 @@ const compression = require('compression');
 const f = require('./models/functions.js');
 
 const mongoose = require('mongoose'); // 加载mongoose來操作mongodb
-// mongoose.connect('mongodb+srv://shihchun:root1234@cluster0-wq6f0.mongodb.net/shop?retryWrites=true', {useNewUrlParser: true});
-mongoose.connect('mongodb://localhost:27017/shopping-site', {useNewUrlParser: true});
+mongoose.connect('mongodb+srv://shihchun:root1234@cluster0-wq6f0.mongodb.net/shop?retryWrites=true', {useNewUrlParser: true});
+// mongoose.connect('mongodb://localhost:27017/shopping-site', {useNewUrlParser: true});
 console.log('MongoDB connection success!');
 
 // include other Routers //
@@ -73,20 +73,6 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
-
-var Server = require('socket.io');
-var io = new Server();
-
-io.serveClient(false);
-exports.io = io;
-
-
-io.on('connection', function(socket){
-    socket.on('chat message', function(msg){
-        console.log(msg)
-        io.emit('chat message', msg);
-    });
 });
 
 

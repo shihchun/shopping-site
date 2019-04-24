@@ -178,7 +178,20 @@ router.post('/login', function (req, res) {
                     account: account,
                     passphrase: passphrase
                 };
-                res.json("You're login with session "+ JSON.stringify(req.session.user));
+                req.flash('pannel', JSON.stringify(req.session.user));
+                console.log(">>>>>>>req.flash"+req.flash('pannel'));
+                return res.redirect('/users/');
+
+                let ms = 5000; // req.query.t
+                ms = (ms>5000 || isNaN(ms)) ? 1000 : parseInt(ms); 
+                setTimeout((()=> res.status(200).send({delay:ms})), ms);
+                setTimeout(function(){}, 5000);
+                req.session.save(function(err) {
+                    // session saved
+                    console.log('session saved');
+                    res.redirect('/someRoute');
+                  });
+                
             } else {
                 req.flash('pannel', '密碼錯誤');
                 return res.redirect('/users/login');
@@ -202,8 +215,6 @@ router.get('/logout', function (req, res) {
         req.flash('pannel', "管理員 " + account + " 您已經登出"); //這會使用到cookie
         return res.redirect('/admin/login');
     }
-    req.session.user = null;
-    req.session.admin = null;
     req.flash('pannel', "mesage: '沒有登入'"); //這會使用到cookie
     return res.redirect('/users/login');
     // return res.json({mesage:'已經登出'});
@@ -225,16 +236,18 @@ router.use(function (req, res, next) {
 // Controller of the views and model
 // 使用者的部分
 router.get('/', function (req, res, next) {
+    console.log(">>>>>>>req.flash"+req.flash('pannel'));
     customerModel.fetch(function (err, result) {
+        console.log(">>>>>>>>>>>>"+req.flash('pannel'));
         if (err) {
             console.log(err);
             return res.json(err);
         }
         arr = f.fakeIdArray(result);
         console.log("arr>>>\n" + arr);
-        res.render('users/index', {
+        return res.render('users/index', {
             title: '使用者',
-            message: '',
+            message: req.flash('pannel'),
             userlist: arr,
         });
     });
@@ -244,15 +257,21 @@ router.get('/', function (req, res, next) {
 router.get('/account/:id', function (req, res) {
     //網址上的 :id = req.params.id
     var id = f.decrypt(req.params.id);
-    customerModel.findById(id, function (err, result) {
-        result.fakeID = f.encrypt(result.id);
-        result._id = null;
-        console.log("\n>>>findById>>>\n" + result);
-        res.render('users/index', {
-            title: '您好，' + result.firstname,
-            detial: result
+    if(id){
+        customerModel.findById(id, function (err, result) {
+            result.fakeID = f.encrypt(result.id);
+            result._id = null;
+            console.log("\n>>>findById>>>\n" + result);
+            return res.render('users/index', {
+                title: '您好，' + result.firstname,
+                detial: result
+            });
         });
-    });
+    } else {
+        req.flash('pannel', '/account/:id 找不到這個人');
+        return res.redirect('/');
+    }
+
 });
 
 // user modify
@@ -262,7 +281,7 @@ router.get('/account/update/:id', function (req, res) {
         customerModel.findById(id, function (err, result) {
             result.fakeID = f.encrypt(result.id);
             result._id = null;
-            res.render('users/logins', {
+            return res.render('users/logins', {
                 title: '註冊',
                 log: "登入",
                 herf_login: "/users/login",
