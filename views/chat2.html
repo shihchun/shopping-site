@@ -65,7 +65,7 @@
 
     var socket = io('{{host.socket}}');
 
-    const addParticipantsMessage = (data) => {
+    const addParticipantsMessage = function (data) {
       var message = '';
       if (data.numUsers === 1) {
         message += "there's 1 participant";
@@ -115,7 +115,7 @@
     }
 
     // Adds the visual chat message to the message list
-    const addChatMessage = (data, options) => {
+    const addChatMessage = function (data, options) {
       // Don't fade the message in if there is an 'X was typing'
       var $typingMessages = getTypingMessages(data);
       options = options || {};
@@ -282,7 +282,7 @@
           })
       })
 
-    $inputMessage.on('input', () => {
+    $inputMessage.on('input', function(){
       updateTyping();
     });
 
