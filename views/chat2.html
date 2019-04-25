@@ -5,7 +5,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Socket.IO Chat Example</title>
-  <link rel="stylesheet" href="style.css">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
   <ul class="pages">
@@ -19,7 +22,7 @@
       <div class="form">
         <h3 class="title">請輸入暱稱</h3>
         <input class="usernameInput" type="text" maxlength="14" />
-        <button class="usernameSubmit" class="inputMessage btn btn-lg btn-primary btn-block" type="submit" onClick="$loginPage.click();">提交</button>
+        <td><button class=" usernameSubmit btn btn-success del" type="button">提交</button></td>
       </div>
     </li>
   </ul>
@@ -27,7 +30,6 @@
   <!-- <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script> -->
   <script src="/js/socket.io-1.4.8.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="/main.js"></script>
 </body>
 </html>
 
@@ -224,14 +226,13 @@ $(function() {
   }
 
   // Keyboard events
-
   $window.keydown(event => {
     // Auto-focus the current input when a key is typed
     if (!(event.ctrlKey || event.metaKey || event.altKey)) {
       $currentInput.focus();
     }
     // When the client hits ENTER on their keyboard
-    if (event.which == 13 || event.which == 190 || event.which == 0) {
+    if (event.which == 13) {
       if (username) {
         sendMessage();
         socket.emit('stop typing');
@@ -241,7 +242,17 @@ $(function() {
       }
     }
   });
-
+  $(document).ready(function () {
+        $('.del').on('click', function (e) {
+          if (username) {
+            sendMessage();
+            socket.emit('stop typing');
+            typing = false;
+          } else {
+            setUsername();
+          }
+        })
+    })
   $inputMessage.on('input', () => {
     updateTyping();
   });
