@@ -283,9 +283,13 @@
             }
           })
       })
-    $inputMessage.on('input', () => {
+    $inputMessage.bind('input', () => {
       updateTyping();
     });
+
+    // $inputMessage.on('input', () => {
+    //   updateTyping();
+    // });
 
     // Click events
 
