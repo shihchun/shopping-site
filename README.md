@@ -12,9 +12,6 @@ Use
 
 if any license problem, i can delete it.
 
-ec2-18-188-217-25.us-east-2.compute.amazonaws.com
+Now Online 
 
-http://bit.ly/2viHI2Z
-http://bit.ly/2viHtoB  => chat
-
-ssh -i "AWS-VM.pem" ubuntu@ec2-18-188-217-25.us-east-2.compute.amazonaws.com
+http://ec2-18-222-48-197.us-east-2.compute.amazonaws.com:4000/
